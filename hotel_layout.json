@@ -1,0 +1,4192 @@
+[
+    {
+        "name": "Shaft_Back",
+        "min_x": -7.1,
+        "max_x": -6.9,
+        "min_y": -3.0,
+        "max_y": 3.0,
+        "min_z": 0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Shaft_Side_Top",
+        "min_x": -7.0,
+        "max_x": -3.0,
+        "min_y": 2.9,
+        "max_y": 3.1,
+        "min_z": 0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Shaft_Side_Bot",
+        "min_x": -7.0,
+        "max_x": -3.0,
+        "min_y": -3.1,
+        "max_y": -2.9,
+        "min_z": 0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Shaft_Divider",
+        "min_x": -7.0,
+        "max_x": -3.0,
+        "min_y": -0.1,
+        "max_y": 0.1,
+        "min_z": 0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Platform",
+        "min_x": -6.0,
+        "max_x": -4.0,
+        "min_y": -2.75,
+        "max_y": -0.25,
+        "min_z": 0.0,
+        "max_z": 0.1,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Platform",
+        "min_x": -6.0,
+        "max_x": -4.0,
+        "min_y": -2.75,
+        "max_y": -0.25,
+        "min_z": 1.75,
+        "max_z": 1.85,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Platform",
+        "min_x": -6.0,
+        "max_x": -4.0,
+        "min_y": -2.75,
+        "max_y": -0.25,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Platform",
+        "min_x": -6.0,
+        "max_x": -4.0,
+        "min_y": -2.75,
+        "max_y": -0.25,
+        "min_z": 5.25,
+        "max_z": 5.35,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Platform",
+        "min_x": -6.0,
+        "max_x": -4.0,
+        "min_y": -2.75,
+        "max_y": -0.25,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Platform",
+        "min_x": -6.0,
+        "max_x": -4.0,
+        "min_y": -2.75,
+        "max_y": -0.25,
+        "min_z": 8.75,
+        "max_z": 8.85,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Platform",
+        "min_x": -6.0,
+        "max_x": -4.0,
+        "min_y": -2.75,
+        "max_y": -0.25,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Platform",
+        "min_x": -6.0,
+        "max_x": -4.0,
+        "min_y": -2.75,
+        "max_y": -0.25,
+        "min_z": 12.25,
+        "max_z": 12.35,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Platform",
+        "min_x": -6.0,
+        "max_x": -4.0,
+        "min_y": -2.75,
+        "max_y": -0.25,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Platform",
+        "min_x": -6.0,
+        "max_x": -4.0,
+        "min_y": -2.75,
+        "max_y": -0.25,
+        "min_z": 15.75,
+        "max_z": 15.85,
+        "color": "grey"
+    },
+    {
+        "name": "Lobby_Floor",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": 7.0,
+        "min_z": 0.0,
+        "max_z": 0.1,
+        "color": "blue"
+    },
+    {
+        "name": "Lobby_Ceil",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "grey"
+    },
+    {
+        "name": "Reception_Desk",
+        "min_x": 4.5,
+        "max_x": 5.5,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 0.0,
+        "max_z": 1.1,
+        "color": "brown"
+    },
+    {
+        "name": "Office_Floor",
+        "min_x": 6.5,
+        "max_x": 10.5,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 0.0,
+        "max_z": 0.1,
+        "color": "brown"
+    },
+    {
+        "name": "Office_Wall_L",
+        "min_x": 6.4,
+        "max_x": 6.6,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 0.0,
+        "max_z": 3.5,
+        "color": "grey"
+    },
+    {
+        "name": "Office_Wall_R",
+        "min_x": 10.4,
+        "max_x": 10.6,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 0.0,
+        "max_z": 3.5,
+        "color": "grey"
+    },
+    {
+        "name": "Office_Wall_T",
+        "min_x": 6.5,
+        "max_x": 10.5,
+        "min_y": 1.9,
+        "max_y": 2.1,
+        "min_z": 0.0,
+        "max_z": 3.5,
+        "color": "grey"
+    },
+    {
+        "name": "Office_Wall_B",
+        "min_x": 6.5,
+        "max_x": 10.5,
+        "min_y": -2.1,
+        "max_y": -1.9,
+        "min_z": 0.0,
+        "max_z": 3.5,
+        "color": "grey"
+    },
+    {
+        "name": "Office_Header",
+        "min_x": 6.4,
+        "max_x": 6.6,
+        "min_y": -0.5,
+        "max_y": 0.5,
+        "min_z": 2.2,
+        "max_z": 3.5,
+        "color": "grey"
+    },
+    {
+        "name": "Lobby_Ext_Back",
+        "min_x": 19.9,
+        "max_x": 20.1,
+        "min_y": -7.0,
+        "max_y": 7.0,
+        "min_z": 0.0,
+        "max_z": 3.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Lobby_Ext_Top",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": 6.9,
+        "max_y": 7.1,
+        "min_z": 0.0,
+        "max_z": 3.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Lobby_Ext_Bot",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -7.1,
+        "max_y": -6.9,
+        "min_z": 0.0,
+        "max_z": 3.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Lobby_Ext_Front_T",
+        "min_x": -0.1,
+        "max_x": 0.1,
+        "min_y": 2.0,
+        "max_y": 7.0,
+        "min_z": 0.0,
+        "max_z": 3.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Lobby_Ext_Front_B",
+        "min_x": -0.1,
+        "max_x": 0.1,
+        "min_y": -7.0,
+        "max_y": -2.0,
+        "min_z": 0.0,
+        "max_z": 3.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Main_Entrance_Header",
+        "min_x": -0.1,
+        "max_x": 0.1,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 2.8,
+        "max_z": 3.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Awning",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.5,
+        "max_y": 2.5,
+        "min_z": 3.0,
+        "max_z": 3.2,
+        "color": "black"
+    },
+    {
+        "name": "Pole_T",
+        "min_x": -2.8499999999999996,
+        "max_x": -2.75,
+        "min_y": 2.25,
+        "max_y": 2.3499999999999996,
+        "min_z": 0.0,
+        "max_z": 3.0,
+        "color": "black"
+    },
+    {
+        "name": "Pole_B",
+        "min_x": -2.8499999999999996,
+        "max_x": -2.75,
+        "min_y": -2.3499999999999996,
+        "max_y": -2.25,
+        "min_z": 0.0,
+        "max_z": 3.0,
+        "color": "black"
+    },
+    {
+        "name": "Lift_Lobby_Floor",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "blue"
+    },
+    {
+        "name": "Lift_Lobby_Ceil",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Lobby_Wall_Top",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": 1.9,
+        "max_y": 2.1,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Lift_Lobby_Wall_Bot",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.1,
+        "max_y": -1.9,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Shaft_Wall_Center",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": -0.5,
+        "max_y": 0.5,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Header",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": 0.75,
+        "max_y": 2.25,
+        "min_z": 5.7,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Side_Wall",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": 2.0,
+        "max_y": 3.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Header",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": -2.25,
+        "max_y": -0.75,
+        "min_z": 5.7,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Side_Wall",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": -3.0,
+        "max_y": -2.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Floor",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "blue"
+    },
+    {
+        "name": "Hall_Ceil",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "grey"
+    },
+    {
+        "name": "Closet_Floor",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "blue"
+    },
+    {
+        "name": "Closet_Ceil",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "grey"
+    },
+    {
+        "name": "Closet_Wall_Back",
+        "min_x": 22.9,
+        "max_x": 23.1,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Closet_Wall_L",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Closet_Wall_R",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Closet_Header",
+        "min_x": 19.9,
+        "max_x": 20.1,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 5.7,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 8.326672684688674e-17,
+        "max_x": 0.2000000000000001,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 4.800000000000001,
+        "max_x": 5.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 1.75,
+        "max_x": 3.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 3.5,
+        "max_z": 4.1,
+        "color": "red"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 8.326672684688674e-17,
+        "max_x": 0.2000000000000001,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 4.800000000000001,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 1.75,
+        "max_x": 3.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 3.5,
+        "max_z": 4.1,
+        "color": "red"
+    },
+    {
+        "name": "Couch",
+        "min_x": 0.5,
+        "max_x": 1.5,
+        "min_y": -4.0,
+        "max_y": -2.0,
+        "min_z": 3.5,
+        "max_z": 4.3,
+        "color": "green"
+    },
+    {
+        "name": "TV_Stand",
+        "min_x": 3.75,
+        "max_x": 4.25,
+        "min_y": -3.75,
+        "max_y": -2.25,
+        "min_z": 3.5,
+        "max_z": 4.3,
+        "color": "black"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 0.0,
+        "max_x": 2.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 3.0,
+        "max_x": 5.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 2.0,
+        "max_x": 3.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 5.7,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 0.0,
+        "max_x": 2.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 3.0,
+        "max_x": 5.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 2.0,
+        "max_x": 3.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 5.7,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 5.0,
+        "max_x": 5.199999999999999,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 9.8,
+        "max_x": 10.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 6.75,
+        "max_x": 8.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 3.5,
+        "max_z": 4.1,
+        "color": "red"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 5.0,
+        "max_x": 5.199999999999999,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 9.8,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 6.75,
+        "max_x": 8.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 3.5,
+        "max_z": 4.1,
+        "color": "red"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 5.0,
+        "max_x": 7.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 8.0,
+        "max_x": 10.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 7.0,
+        "max_x": 8.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 5.7,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 5.0,
+        "max_x": 7.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 8.0,
+        "max_x": 10.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 7.0,
+        "max_x": 8.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 5.7,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 10.0,
+        "max_x": 10.2,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 14.8,
+        "max_x": 15.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 11.75,
+        "max_x": 13.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 3.5,
+        "max_z": 4.1,
+        "color": "red"
+    },
+    {
+        "name": "Couch",
+        "min_x": 10.5,
+        "max_x": 11.5,
+        "min_y": 2.0,
+        "max_y": 4.0,
+        "min_z": 3.5,
+        "max_z": 4.3,
+        "color": "green"
+    },
+    {
+        "name": "TV_Stand",
+        "min_x": 13.75,
+        "max_x": 14.25,
+        "min_y": 2.25,
+        "max_y": 3.75,
+        "min_z": 3.5,
+        "max_z": 4.3,
+        "color": "black"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 10.0,
+        "max_x": 10.2,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 14.8,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 11.75,
+        "max_x": 13.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 3.5,
+        "max_z": 4.1,
+        "color": "red"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 10.0,
+        "max_x": 12.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 13.0,
+        "max_x": 15.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 12.0,
+        "max_x": 13.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 5.7,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 10.0,
+        "max_x": 12.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 13.0,
+        "max_x": 15.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 12.0,
+        "max_x": 13.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 5.7,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 15.0,
+        "max_x": 15.2,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 19.799999999999997,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 16.75,
+        "max_x": 18.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 3.5,
+        "max_z": 4.1,
+        "color": "red"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 3.5,
+        "max_z": 3.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 15.0,
+        "max_x": 15.2,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 19.799999999999997,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 16.75,
+        "max_x": 18.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 3.5,
+        "max_z": 4.1,
+        "color": "red"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 15.0,
+        "max_x": 17.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 18.0,
+        "max_x": 20.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 17.0,
+        "max_x": 18.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 5.7,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 15.0,
+        "max_x": 17.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 18.0,
+        "max_x": 20.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 3.5,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 17.0,
+        "max_x": 18.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 5.7,
+        "max_z": 7.0,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Lobby_Floor",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "blue"
+    },
+    {
+        "name": "Lift_Lobby_Ceil",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Lobby_Wall_Top",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": 1.9,
+        "max_y": 2.1,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Lift_Lobby_Wall_Bot",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.1,
+        "max_y": -1.9,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Shaft_Wall_Center",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": -0.5,
+        "max_y": 0.5,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Header",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": 0.75,
+        "max_y": 2.25,
+        "min_z": 9.2,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Side_Wall",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": 2.0,
+        "max_y": 3.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Header",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": -2.25,
+        "max_y": -0.75,
+        "min_z": 9.2,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Side_Wall",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": -3.0,
+        "max_y": -2.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Floor",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "blue"
+    },
+    {
+        "name": "Hall_Ceil",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "grey"
+    },
+    {
+        "name": "Closet_Floor",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "blue"
+    },
+    {
+        "name": "Closet_Ceil",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "grey"
+    },
+    {
+        "name": "Closet_Wall_Back",
+        "min_x": 22.9,
+        "max_x": 23.1,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Closet_Wall_L",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Closet_Wall_R",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Closet_Header",
+        "min_x": 19.9,
+        "max_x": 20.1,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 9.2,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 8.326672684688674e-17,
+        "max_x": 0.2000000000000001,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 4.800000000000001,
+        "max_x": 5.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 1.75,
+        "max_x": 3.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 7.0,
+        "max_z": 7.6,
+        "color": "red"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 8.326672684688674e-17,
+        "max_x": 0.2000000000000001,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 4.800000000000001,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 1.75,
+        "max_x": 3.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 7.0,
+        "max_z": 7.6,
+        "color": "red"
+    },
+    {
+        "name": "Couch",
+        "min_x": 0.5,
+        "max_x": 1.5,
+        "min_y": -4.0,
+        "max_y": -2.0,
+        "min_z": 7.0,
+        "max_z": 7.8,
+        "color": "green"
+    },
+    {
+        "name": "TV_Stand",
+        "min_x": 3.75,
+        "max_x": 4.25,
+        "min_y": -3.75,
+        "max_y": -2.25,
+        "min_z": 7.0,
+        "max_z": 7.8,
+        "color": "black"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 0.0,
+        "max_x": 2.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 3.0,
+        "max_x": 5.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 2.0,
+        "max_x": 3.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 9.2,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 0.0,
+        "max_x": 2.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 3.0,
+        "max_x": 5.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 2.0,
+        "max_x": 3.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 9.2,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 5.0,
+        "max_x": 5.199999999999999,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 9.8,
+        "max_x": 10.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 6.75,
+        "max_x": 8.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 7.0,
+        "max_z": 7.6,
+        "color": "red"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 5.0,
+        "max_x": 5.199999999999999,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 9.8,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 6.75,
+        "max_x": 8.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 7.0,
+        "max_z": 7.6,
+        "color": "red"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 5.0,
+        "max_x": 7.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 8.0,
+        "max_x": 10.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 7.0,
+        "max_x": 8.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 9.2,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 5.0,
+        "max_x": 7.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 8.0,
+        "max_x": 10.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 7.0,
+        "max_x": 8.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 9.2,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 10.0,
+        "max_x": 10.2,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 14.8,
+        "max_x": 15.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 11.75,
+        "max_x": 13.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 7.0,
+        "max_z": 7.6,
+        "color": "red"
+    },
+    {
+        "name": "Couch",
+        "min_x": 10.5,
+        "max_x": 11.5,
+        "min_y": 2.0,
+        "max_y": 4.0,
+        "min_z": 7.0,
+        "max_z": 7.8,
+        "color": "green"
+    },
+    {
+        "name": "TV_Stand",
+        "min_x": 13.75,
+        "max_x": 14.25,
+        "min_y": 2.25,
+        "max_y": 3.75,
+        "min_z": 7.0,
+        "max_z": 7.8,
+        "color": "black"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 10.0,
+        "max_x": 10.2,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 14.8,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 11.75,
+        "max_x": 13.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 7.0,
+        "max_z": 7.6,
+        "color": "red"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 10.0,
+        "max_x": 12.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 13.0,
+        "max_x": 15.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 12.0,
+        "max_x": 13.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 9.2,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 10.0,
+        "max_x": 12.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 13.0,
+        "max_x": 15.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 12.0,
+        "max_x": 13.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 9.2,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 15.0,
+        "max_x": 15.2,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 19.799999999999997,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 16.75,
+        "max_x": 18.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 7.0,
+        "max_z": 7.6,
+        "color": "red"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 7.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 15.0,
+        "max_x": 15.2,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 19.799999999999997,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 16.75,
+        "max_x": 18.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 7.0,
+        "max_z": 7.6,
+        "color": "red"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 15.0,
+        "max_x": 17.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 18.0,
+        "max_x": 20.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 17.0,
+        "max_x": 18.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 9.2,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 15.0,
+        "max_x": 17.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 18.0,
+        "max_x": 20.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 7.0,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 17.0,
+        "max_x": 18.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 9.2,
+        "max_z": 10.5,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Lobby_Floor",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "blue"
+    },
+    {
+        "name": "Lift_Lobby_Ceil",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Lobby_Wall_Top",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": 1.9,
+        "max_y": 2.1,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Lift_Lobby_Wall_Bot",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.1,
+        "max_y": -1.9,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Shaft_Wall_Center",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": -0.5,
+        "max_y": 0.5,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Header",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": 0.75,
+        "max_y": 2.25,
+        "min_z": 12.7,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Side_Wall",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": 2.0,
+        "max_y": 3.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Header",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": -2.25,
+        "max_y": -0.75,
+        "min_z": 12.7,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Side_Wall",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": -3.0,
+        "max_y": -2.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Floor",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "blue"
+    },
+    {
+        "name": "Hall_Ceil",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "grey"
+    },
+    {
+        "name": "Closet_Floor",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "blue"
+    },
+    {
+        "name": "Closet_Ceil",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "grey"
+    },
+    {
+        "name": "Closet_Wall_Back",
+        "min_x": 22.9,
+        "max_x": 23.1,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Closet_Wall_L",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Closet_Wall_R",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Closet_Header",
+        "min_x": 19.9,
+        "max_x": 20.1,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 12.7,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 8.326672684688674e-17,
+        "max_x": 0.2000000000000001,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 4.800000000000001,
+        "max_x": 5.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 1.75,
+        "max_x": 3.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 10.5,
+        "max_z": 11.1,
+        "color": "red"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 8.326672684688674e-17,
+        "max_x": 0.2000000000000001,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 4.800000000000001,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 1.75,
+        "max_x": 3.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 10.5,
+        "max_z": 11.1,
+        "color": "red"
+    },
+    {
+        "name": "Couch",
+        "min_x": 0.5,
+        "max_x": 1.5,
+        "min_y": -4.0,
+        "max_y": -2.0,
+        "min_z": 10.5,
+        "max_z": 11.3,
+        "color": "green"
+    },
+    {
+        "name": "TV_Stand",
+        "min_x": 3.75,
+        "max_x": 4.25,
+        "min_y": -3.75,
+        "max_y": -2.25,
+        "min_z": 10.5,
+        "max_z": 11.3,
+        "color": "black"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 0.0,
+        "max_x": 2.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 3.0,
+        "max_x": 5.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 2.0,
+        "max_x": 3.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 12.7,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 0.0,
+        "max_x": 2.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 3.0,
+        "max_x": 5.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 2.0,
+        "max_x": 3.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 12.7,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 5.0,
+        "max_x": 5.199999999999999,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 9.8,
+        "max_x": 10.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 6.75,
+        "max_x": 8.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 10.5,
+        "max_z": 11.1,
+        "color": "red"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 5.0,
+        "max_x": 5.199999999999999,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 9.8,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 6.75,
+        "max_x": 8.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 10.5,
+        "max_z": 11.1,
+        "color": "red"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 5.0,
+        "max_x": 7.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 8.0,
+        "max_x": 10.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 7.0,
+        "max_x": 8.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 12.7,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 5.0,
+        "max_x": 7.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 8.0,
+        "max_x": 10.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 7.0,
+        "max_x": 8.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 12.7,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 10.0,
+        "max_x": 10.2,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 14.8,
+        "max_x": 15.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 11.75,
+        "max_x": 13.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 10.5,
+        "max_z": 11.1,
+        "color": "red"
+    },
+    {
+        "name": "Couch",
+        "min_x": 10.5,
+        "max_x": 11.5,
+        "min_y": 2.0,
+        "max_y": 4.0,
+        "min_z": 10.5,
+        "max_z": 11.3,
+        "color": "green"
+    },
+    {
+        "name": "TV_Stand",
+        "min_x": 13.75,
+        "max_x": 14.25,
+        "min_y": 2.25,
+        "max_y": 3.75,
+        "min_z": 10.5,
+        "max_z": 11.3,
+        "color": "black"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 10.0,
+        "max_x": 10.2,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 14.8,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 11.75,
+        "max_x": 13.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 10.5,
+        "max_z": 11.1,
+        "color": "red"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 10.0,
+        "max_x": 12.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 13.0,
+        "max_x": 15.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 12.0,
+        "max_x": 13.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 12.7,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 10.0,
+        "max_x": 12.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 13.0,
+        "max_x": 15.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 12.0,
+        "max_x": 13.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 12.7,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 15.0,
+        "max_x": 15.2,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 19.799999999999997,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 16.75,
+        "max_x": 18.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 10.5,
+        "max_z": 11.1,
+        "color": "red"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 10.6,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 15.0,
+        "max_x": 15.2,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 19.799999999999997,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 16.75,
+        "max_x": 18.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 10.5,
+        "max_z": 11.1,
+        "color": "red"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 15.0,
+        "max_x": 17.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 18.0,
+        "max_x": 20.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 17.0,
+        "max_x": 18.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 12.7,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 15.0,
+        "max_x": 17.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 18.0,
+        "max_x": 20.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 10.5,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 17.0,
+        "max_x": 18.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 12.7,
+        "max_z": 14.0,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Lobby_Floor",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "blue"
+    },
+    {
+        "name": "Lift_Lobby_Ceil",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 17.5,
+        "max_z": 17.6,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Lobby_Wall_Top",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": 1.9,
+        "max_y": 2.1,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Lift_Lobby_Wall_Bot",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.1,
+        "max_y": -1.9,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Shaft_Wall_Center",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": -0.5,
+        "max_y": 0.5,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Header",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": 0.75,
+        "max_y": 2.25,
+        "min_z": 16.2,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Lift_Side_Wall",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": 2.0,
+        "max_y": 3.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Header",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": -2.25,
+        "max_y": -0.75,
+        "min_z": 16.2,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Stair_Side_Wall",
+        "min_x": -3.1,
+        "max_x": -2.9,
+        "min_y": -3.0,
+        "max_y": -2.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Floor",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "blue"
+    },
+    {
+        "name": "Hall_Ceil",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 17.5,
+        "max_z": 17.6,
+        "color": "grey"
+    },
+    {
+        "name": "Closet_Floor",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "blue"
+    },
+    {
+        "name": "Closet_Ceil",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 17.5,
+        "max_z": 17.6,
+        "color": "grey"
+    },
+    {
+        "name": "Closet_Wall_Back",
+        "min_x": 22.9,
+        "max_x": 23.1,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Closet_Wall_L",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Closet_Wall_R",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Closet_Header",
+        "min_x": 19.9,
+        "max_x": 20.1,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 16.2,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 17.5,
+        "max_z": 17.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 8.326672684688674e-17,
+        "max_x": 0.2000000000000001,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 4.800000000000001,
+        "max_x": 5.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 1.75,
+        "max_x": 3.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 14.0,
+        "max_z": 14.6,
+        "color": "red"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 17.5,
+        "max_z": 17.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 8.326672684688674e-17,
+        "max_x": 0.2000000000000001,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 4.800000000000001,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 0.0,
+        "max_x": 5.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 1.75,
+        "max_x": 3.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 14.0,
+        "max_z": 14.6,
+        "color": "red"
+    },
+    {
+        "name": "Couch",
+        "min_x": 0.5,
+        "max_x": 1.5,
+        "min_y": -4.0,
+        "max_y": -2.0,
+        "min_z": 14.0,
+        "max_z": 14.8,
+        "color": "green"
+    },
+    {
+        "name": "TV_Stand",
+        "min_x": 3.75,
+        "max_x": 4.25,
+        "min_y": -3.75,
+        "max_y": -2.25,
+        "min_z": 14.0,
+        "max_z": 14.8,
+        "color": "black"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 0.0,
+        "max_x": 2.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 3.0,
+        "max_x": 5.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 2.0,
+        "max_x": 3.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 16.2,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 0.0,
+        "max_x": 2.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 3.0,
+        "max_x": 5.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 2.0,
+        "max_x": 3.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 16.2,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 17.5,
+        "max_z": 17.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 5.0,
+        "max_x": 5.199999999999999,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 9.8,
+        "max_x": 10.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 6.75,
+        "max_x": 8.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 14.0,
+        "max_z": 14.6,
+        "color": "red"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 17.5,
+        "max_z": 17.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 5.0,
+        "max_x": 5.199999999999999,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 9.8,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 5.0,
+        "max_x": 10.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 6.75,
+        "max_x": 8.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 14.0,
+        "max_z": 14.6,
+        "color": "red"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 5.0,
+        "max_x": 7.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 8.0,
+        "max_x": 10.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 7.0,
+        "max_x": 8.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 16.2,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 5.0,
+        "max_x": 7.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 8.0,
+        "max_x": 10.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 7.0,
+        "max_x": 8.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 16.2,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 17.5,
+        "max_z": 17.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 10.0,
+        "max_x": 10.2,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 14.8,
+        "max_x": 15.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 11.75,
+        "max_x": 13.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 14.0,
+        "max_z": 14.6,
+        "color": "red"
+    },
+    {
+        "name": "Couch",
+        "min_x": 10.5,
+        "max_x": 11.5,
+        "min_y": 2.0,
+        "max_y": 4.0,
+        "min_z": 14.0,
+        "max_z": 14.8,
+        "color": "green"
+    },
+    {
+        "name": "TV_Stand",
+        "min_x": 13.75,
+        "max_x": 14.25,
+        "min_y": 2.25,
+        "max_y": 3.75,
+        "min_z": 14.0,
+        "max_z": 14.8,
+        "color": "black"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 17.5,
+        "max_z": 17.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 10.0,
+        "max_x": 10.2,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 14.8,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 10.0,
+        "max_x": 15.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 11.75,
+        "max_x": 13.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 14.0,
+        "max_z": 14.6,
+        "color": "red"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 10.0,
+        "max_x": 12.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 13.0,
+        "max_x": 15.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 12.0,
+        "max_x": 13.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 16.2,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 10.0,
+        "max_x": 12.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 13.0,
+        "max_x": 15.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 12.0,
+        "max_x": 13.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 16.2,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 17.5,
+        "max_z": 17.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 15.0,
+        "max_x": 15.2,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 19.799999999999997,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 16.75,
+        "max_x": 18.25,
+        "min_y": 4.5,
+        "max_y": 6.5,
+        "min_z": 14.0,
+        "max_z": 14.6,
+        "color": "red"
+    },
+    {
+        "name": "Room_Floor",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 14.1,
+        "color": "blue"
+    },
+    {
+        "name": "Room_Ceil",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 17.5,
+        "max_z": 17.6,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Left",
+        "min_x": 15.0,
+        "max_x": 15.2,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Right",
+        "min_x": 19.799999999999997,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Wall_Ext_Back",
+        "min_x": 15.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Bed",
+        "min_x": 16.75,
+        "max_x": 18.25,
+        "min_y": -6.5,
+        "max_y": -4.5,
+        "min_z": 14.0,
+        "max_z": 14.6,
+        "color": "red"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 15.0,
+        "max_x": 17.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 18.0,
+        "max_x": 20.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 17.0,
+        "max_x": 18.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 16.2,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 15.0,
+        "max_x": 17.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Hall_Wall",
+        "min_x": 18.0,
+        "max_x": 20.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 14.0,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Door_Head",
+        "min_x": 17.0,
+        "max_x": 18.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 16.2,
+        "max_z": 17.5,
+        "color": "grey"
+    },
+    {
+        "name": "Roof_Main",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": 7.0,
+        "min_z": 17.5,
+        "max_z": 17.7,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Roof_Lift",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.0,
+        "max_y": 2.0,
+        "min_z": 17.5,
+        "max_z": 17.7,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Roof_Closet",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 17.5,
+        "max_z": 17.7,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Para_Top",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": 6.800000000000001,
+        "max_y": 7.0,
+        "min_z": 17.5,
+        "max_z": 18.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Para_Bot",
+        "min_x": 0.0,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -6.800000000000001,
+        "min_z": 17.5,
+        "max_z": 18.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Para_L_Top",
+        "min_x": 0.0,
+        "max_x": 0.2,
+        "min_y": 2.0,
+        "max_y": 7.0,
+        "min_z": 17.5,
+        "max_z": 18.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Para_L_Bot",
+        "min_x": 0.0,
+        "max_x": 0.2,
+        "min_y": -7.0,
+        "max_y": -2.0,
+        "min_z": 17.5,
+        "max_z": 18.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Para_Lift_Top",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": 1.9,
+        "max_y": 2.1,
+        "min_z": 17.5,
+        "max_z": 18.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Para_Lift_Bot",
+        "min_x": -3.0,
+        "max_x": 0.0,
+        "min_y": -2.1,
+        "max_y": -1.9,
+        "min_z": 17.5,
+        "max_z": 18.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Para_R_Top",
+        "min_x": 19.799999999999997,
+        "max_x": 20.0,
+        "min_y": 1.0,
+        "max_y": 7.0,
+        "min_z": 17.5,
+        "max_z": 18.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Para_R_Bot",
+        "min_x": 19.799999999999997,
+        "max_x": 20.0,
+        "min_y": -7.0,
+        "max_y": -1.0,
+        "min_z": 17.5,
+        "max_z": 18.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Para_Closet_Top",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": 0.9,
+        "max_y": 1.1,
+        "min_z": 17.5,
+        "max_z": 18.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Para_Closet_Bot",
+        "min_x": 20.0,
+        "max_x": 23.0,
+        "min_y": -1.1,
+        "max_y": -0.9,
+        "min_z": 17.5,
+        "max_z": 18.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Para_Closet_End",
+        "min_x": 22.9,
+        "max_x": 23.1,
+        "min_y": -1.0,
+        "max_y": 1.0,
+        "min_z": 17.5,
+        "max_z": 18.5,
+        "color": "dark_grey"
+    },
+    {
+        "name": "Shaft_Cap",
+        "min_x": -7.0,
+        "max_x": -3.0,
+        "min_y": -3.0,
+        "max_y": 3.0,
+        "min_z": 17.5,
+        "max_z": 17.7,
+        "color": "dark_grey"
+    }
+]
