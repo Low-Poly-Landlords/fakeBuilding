@@ -1,3 +1,5 @@
+#run this first, it makes the whole hotel layout
+
 import json
 
 OUTPUT_FILENAME = "hotel_layout.json"

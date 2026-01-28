@@ -1,3 +1,5 @@
+#run this if you want to see a 3d model of what the building looks like
+
 import open3d as o3d
 import json
 import numpy as np
