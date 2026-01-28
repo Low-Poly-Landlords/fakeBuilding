@@ -1,4 +1,4 @@
-#run this to make a set of "floor plans" for the building.
+#run this to make a set of "floor plans" for the building. must run after building gen.
 
 import json
 import matplotlib.pyplot as plt
