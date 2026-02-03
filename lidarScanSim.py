@@ -1,5 +1,5 @@
 #run this second, it simulates a person walking through the building
-#doing a lidar scan. This will take a while to run.
+#doing a lidar scan. This will take a while to run (at least 2 hours).
 
 import numpy as np
 import math
