@@ -9,76 +9,55 @@ from scipy.spatial.transform import Rotation as R
 
 # --- CONFIGURATION ---
 INPUT_LAYOUT = "hotel_layout.json"
-OUTPUT_FILENAME = "hotel_scan.mcap"
+OUTPUT_FILENAME = "hotel_scan_2d_wobble.mcap"
 
-# Sensor Settings (High Quality)
-FOV_MIN, FOV_MAX = -45.0, 45.0
-RINGS = 32  # Back to High Quality
-POINTS_PER_RING = 512  # Back to High Quality
-WALK_SPEED = 1.5
-FPS = 10
+# 2D SENSOR SETTINGS
+FOV_MIN, FOV_MAX = -60.0, 60.0  # Vertical Field of View (slices floor to ceiling)
+NUM_RAYS = 1024  # High resolution vertical line
+MAX_RANGE = 15.0  # Typical handheld lidar range
 
-# Building Constants
-FLOOR_HEIGHT = 3.5
-ROOM_WIDTH = 5.0
-ROOM_DEPTH = 6.0
-ROOMS_PER_SIDE = 4
+# MOTION SETTINGS
+WALK_SPEED = 0.8  # Walk slower to ensure density
+FPS = 40  # High FPS because 2D lidars spin fast (e.g. 40Hz)
+SWEEP_SPEED = 2.0  # How fast they wave it side-to-side (oscillations per sec)
+SWEEP_ANGLE = 45.0  # Degrees to sweep left/right
 
-# Setup Device (GPU or CPU)
+# GPU SETUP
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Running computation on: {device.type.upper()}")
+print(f"Simulating 2D Vertical Slice on: {device.type.upper()}")
 
 
+# --- MATH HELPERS ---
 def gpu_raycast(rays_o, rays_d, box_min, box_max):
-    """
-    rays_o: [N_rays, 3]
-    rays_d: [N_rays, 3]
-    box_min: [M_boxes, 3]
-    box_max: [M_boxes, 3]
+    # Reshape for broadcast: Rays [N, 1, 3] vs Boxes [1, M, 3]
+    ro, rd = rays_o.unsqueeze(1), rays_d.unsqueeze(1)
+    bmin, bmax = box_min.unsqueeze(0), box_max.unsqueeze(0)
 
-    Returns: [N_rays] distances
-    """
-    # 1. RESHAPE FOR BROADCASTING
-    # We want to compare every Ray (N) against every Box (M)
-    # Rays shape: [N, 1, 3]
-    # Boxes shape: [1, M, 3]
-    ro = rays_o.unsqueeze(1)
-    rd = rays_d.unsqueeze(1)
-    bmin = box_min.unsqueeze(0)
-    bmax = box_max.unsqueeze(0)
-
-    # 2. SLAB METHOD (Parallelized)
-    # Avoid div by zero
+    # Intersection logic
     inv_d = 1.0 / (rd + 1e-6)
-
     t0 = (bmin - ro) * inv_d
     t1 = (bmax - ro) * inv_d
 
     t_min = torch.min(t0, t1)
     t_max = torch.max(t0, t1)
 
-    # Largest entry time across X,Y,Z
     t_enter = torch.max(t_min, dim=2).values
-    # Smallest exit time across X,Y,Z
     t_exit = torch.min(t_max, dim=2).values
 
-    # 3. MASK HITS
-    # Hit if: (t_exit >= t_enter) AND (t_exit > 0)
     hit_mask = (t_exit >= t_enter) & (t_exit > 0)
 
-    # 4. FIND CLOSEST
-    # Set misses to infinity
-    # Shape: [N_rays, M_boxes]
     distances = torch.where(hit_mask, t_enter, torch.tensor(float('inf'), device=device))
-
-    # For each ray, find the SMALLEST distance across all boxes
-    # Shape: [N_rays]
     closest_dists, _ = torch.min(distances, dim=1)
 
     return closest_dists
 
 
-# --- PATH GENERATION (Same as before) ---
+# --- PATH GENERATION (Same methodical route) ---
+FLOOR_HEIGHT = 3.5
+ROOM_WIDTH, ROOM_DEPTH = 5.0, 6.0
+ROOMS_PER_SIDE = 4
+
+
 def generate_waypoints():
     waypoints = []
     z = 1.5
@@ -96,55 +75,71 @@ def generate_waypoints():
 
 def interpolate_path(waypoints):
     full_path = []
+    total_time = 0.0
+
     for i in range(len(waypoints) - 1):
         p1 = np.array(waypoints[i])
         p2 = np.array(waypoints[i + 1])
         dist = np.linalg.norm(p2 - p1)
+
+        # Teleport (Elevator)
         if dist > 5.0 and abs(p1[2] - p2[2]) > 1.0:
-            full_path.append((*p2, 0))
             continue
+
         num_steps = max(1, int((dist / WALK_SPEED) * FPS))
         dx, dy = p2[0] - p1[0], p2[1] - p1[1]
-        yaw = math.atan2(dy, dx)
+        walk_yaw = math.atan2(dy, dx)
+
         for s in range(num_steps):
             t = s / num_steps
             pos = p1 + (p2 - p1) * t
-            look_yaw = yaw + math.sin(t * 5) * 0.5
-            full_path.append((*pos, look_yaw))
+
+            # THE WOBBLE LOGIC
+            # We calculate a time-based sweep
+            # sweep_yaw = sin(time) * 45 degrees
+            current_time = total_time + (s / FPS)
+            sweep_offset = math.sin(current_time * SWEEP_SPEED) * math.radians(SWEEP_ANGLE)
+
+            final_yaw = walk_yaw + sweep_offset
+
+            full_path.append((*pos, final_yaw))
+
+        total_time += (num_steps / FPS)
+
     return full_path
 
 
 def main():
-    # 1. LOAD LAYOUT TO GPU
-    print(f"Loading Layout to {device}...")
+    # 1. LOAD LAYOUT
     with open(INPUT_LAYOUT, 'r') as f:
         layout_data = json.load(f)
 
-    b_mins = []
-    b_maxs = []
+    b_mins, b_maxs = [], []
     for b in layout_data:
         b_mins.append([b['min_x'], b['min_y'], b['min_z']])
         b_maxs.append([b['max_x'], b['max_y'], b['max_z']])
 
-    # Create Tensors [M_boxes, 3]
     box_min_t = torch.tensor(b_mins, dtype=torch.float32, device=device)
     box_max_t = torch.tensor(b_maxs, dtype=torch.float32, device=device)
 
     path = interpolate_path(generate_waypoints())
     print(f"Path length: {len(path)} frames.")
 
-    # 2. PRECOMPUTE RAYS (Spherical -> Cartesian)
-    elevs = torch.linspace(math.radians(FOV_MIN), math.radians(FOV_MAX), RINGS, device=device)
-    azis = torch.linspace(0, 2 * math.pi, POINTS_PER_RING, device=device)
-    e_grid, a_grid = torch.meshgrid(elevs, azis, indexing='ij')
+    # 2. GENERATE 2D VERTICAL SLICE
+    # A vertical line means Azimuth = 0, Elevation varies
+    elevs = torch.linspace(math.radians(FOV_MIN), math.radians(FOV_MAX), NUM_RAYS, device=device)
 
-    # Base Rays (x=forward)
-    base_x = torch.cos(e_grid) * torch.cos(a_grid)
-    base_y = torch.cos(e_grid) * torch.sin(a_grid)
-    base_z = torch.sin(e_grid)
+    # In sensor frame (x=forward), a vertical slice is in the X-Z plane
+    # x = cos(elev)
+    # y = 0
+    # z = sin(elev)
 
-    # Flatten: [N_rays, 3]
-    base_rays = torch.stack([base_x.flatten(), base_y.flatten(), base_z.flatten()], dim=1)
+    base_x = torch.cos(elevs)
+    base_y = torch.zeros_like(elevs)
+    base_z = torch.sin(elevs)
+
+    # [NUM_RAYS, 3]
+    base_rays = torch.stack([base_x, base_y, base_z], dim=1)
 
     # 3. ROS SETUP
     typestore = get_typestore(Stores.ROS2_HUMBLE)
@@ -157,7 +152,7 @@ def main():
     PointCloud2 = typestore.types['sensor_msgs/msg/PointCloud2']
     PointField = typestore.types['sensor_msgs/msg/PointField']
 
-    print(f"Starting GPU Simulation ({RINGS * POINTS_PER_RING} rays/frame)...")
+    print(f"Starting 2D Wobble Simulation...")
     start_time = time.time()
 
     with open(OUTPUT_FILENAME, "wb") as f:
@@ -176,39 +171,31 @@ def main():
         for i, (rx, ry, rz, yaw) in enumerate(path):
             ts_ns = 1000000000 + int(i * (1e9 / FPS))
 
-            # --- A. ROTATE RAYS (ON GPU) ---
+            # --- A. ROTATE RAYS (Yaw Sweep) ---
+            # We apply the Wobble Yaw here
             c, s = math.cos(yaw), math.sin(yaw)
 
-            # Rotate X and Y components
             rot_x = base_rays[:, 0] * c - base_rays[:, 1] * s
             rot_y = base_rays[:, 0] * s + base_rays[:, 1] * c
-            rot_z = base_rays[:, 2]
+            rot_z = base_rays[:, 2]  # No pitch/roll change, z stays z
 
             current_rays_d = torch.stack([rot_x, rot_y, rot_z], dim=1)
-
-            # Create Origins [N, 3]
             current_rays_o = torch.tensor([rx, ry, rz], device=device).expand_as(current_rays_d)
 
-            # --- B. GPU RAYCASTING ---
+            # --- B. GPU RAYCAST ---
             closest_dists = gpu_raycast(current_rays_o, current_rays_d, box_min_t, box_max_t)
 
-            # --- C. FILTER & DOWNLOAD ---
-            # Mask valid hits (Range < 20m)
-            valid_mask = closest_dists < 20.0
-
-            # Filter
+            # --- C. FILTER ---
+            valid_mask = closest_dists < MAX_RANGE
             valid_dists = closest_dists[valid_mask]
 
-            # Calculate Local Point Cloud (Sensor Frame)
-            # We use the UN-ROTATED base rays because LiDAR data is relative to the sensor
+            # IMPORTANT: Reconstruct points in Sensor Frame (no rotation)
+            # The PC2 message expects points relative to the sensor center.
             valid_base = base_rays[valid_mask]
-
             points_xyz = valid_base * valid_dists.unsqueeze(1)
-
-            # Move to CPU for writing (The inevitable bottleneck)
             points_cpu = points_xyz.cpu().numpy().astype(np.float32)
 
-            # --- D. WRITE MESSAGES ---
+            # --- D. WRITE ---
             # TF
             q = R.from_euler('z', yaw).as_quat()
             tf_msg = TFMessage(transforms=[TransformStamped(
@@ -231,16 +218,16 @@ def main():
                     PointField(name="z", offset=8, datatype=7, count=1)
                 ],
                 is_bigendian=False, point_step=12, row_step=12 * len(points_cpu),
-                data=points_cpu.view(np.uint8).flatten(), is_dense=True
+                data=points_cpu.view(np.uint8).flatten(),  # FIXED FOR ROSBAGS
+                is_dense=True
             )
             writer.add_message(pc_cid, ts_ns, typestore.serialize_cdr(pc_msg, "sensor_msgs/msg/PointCloud2"), ts_ns)
 
             if i % 100 == 0:
-                elapsed = time.time() - start_time
-                print(f"GPU Sim: {i}/{len(path)} frames | {elapsed:.1f}s elapsed", end='\r')
+                print(f"Simulating: {i}/{len(path)} frames", end='\r')
 
         writer.finish()
-        print(f"\nDone! Saved {OUTPUT_FILENAME}")
+        print(f"\nSaved {OUTPUT_FILENAME}")
 
 
 if __name__ == "__main__":
