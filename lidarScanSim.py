@@ -1,7 +1,3 @@
-#run this second, it simulates somoneone walking through the building scanning everything
-#you need a gpu to run this, or at the very least pytorch on a cpu. It will take a long time
-#unless you have a beefy gpu.
-
 import torch
 import numpy as np
 import math
