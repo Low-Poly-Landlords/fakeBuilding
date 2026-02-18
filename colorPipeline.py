@@ -9,28 +9,54 @@ from mcap.reader import make_reader
 from mcap_ros2.decoder import DecoderFactory
 
 # --- CONFIGURATION ---
-INPUT_FILE = "new_scan_1.mcap"
-OUTPUT_OBJ = "final_room_fixed.obj"
+INPUT_FILE = "newestScan.mcap"
+OUTPUT_OBJ = "newestScan_camera_fixed.obj"
 
-# Camera Settings
+# 1. GHOST REMOVAL
+MIN_LIDAR_DIST = 1.0
+
+# 2. LIDAR CALIBRATION (Your Tuned Values)
+LIDAR_ROLL_OFFSET = 0.0
+LIDAR_PITCH_OFFSET = -20.0
+LIDAR_YAW_OFFSET = 0.0
+
+# 3. CAMERA CALIBRATION (THE FIX)
 CAM_OFFSET = [0.0, 0.0, 0.05]
 CAM_FOV_DEG = 70.0
 
-# Meshing Settings (MATCHING YOUR PREFERRED CODE)
+# If windows are on the ceiling, try Pitch = -90.0
+# If windows are on the floor, try Pitch = 90.0
+# If windows are on the left wall, try Yaw = 90.0
+CAM_ROLL = 0.0
+CAM_PITCH = -180.0  # <--- TRY THIS FIRST
+CAM_YAW = 0.0
+
+# 4. MESH SETTINGS
 VOXEL_SIZE = 0.03
 POISSON_DEPTH = 9
-TRIM_AMOUNT = 0.01  # Keep 1% (Your setting)
+TRIM_AMOUNT = 0.01
 
-# Calibration
-LIDAR_FIX = R.from_euler('x', 90, degrees=True).as_matrix()
+# --- TRANSFORMS ---
+LIDAR_FIX = R.from_euler('xyz', [
+    90 + LIDAR_ROLL_OFFSET,
+    0 + LIDAR_PITCH_OFFSET,
+    0 + LIDAR_YAW_OFFSET
+], degrees=True).as_matrix()
+
 IMU_FIX = R.from_euler('x', 90, degrees=True)
 
-# --- THE TEXTURE FIX (Only new part) ---
-ROBOT_TO_CAM = np.array([
+# We construct the camera rotation matrix dynamically now
+# Base: Robot Frame -> Camera Optical Frame (Standard Swap)
+BASE_ROBOT_TO_CAM = np.array([
     [0, -1, 0],
     [0, 0, -1],
     [1, 0, 0]
 ])
+
+# User Correction: Applied on top of the base
+USER_CAM_FIX = R.from_euler('xyz', [CAM_ROLL, CAM_PITCH, CAM_YAW], degrees=True).as_matrix()
+# Combined Transform
+FINAL_ROBOT_TO_CAM = USER_CAM_FIX @ BASE_ROBOT_TO_CAM
 
 
 def get_interpolated_pose(target_time, pose_data):
@@ -45,10 +71,10 @@ def get_interpolated_pose(target_time, pose_data):
     return pose_data[idx - 1][1]
 
 
-def project_points_to_image(points, image, intrinsic_matrix):
+def project_points_with_normals(points, normals, image, intrinsic_matrix):
     h, w, _ = image.shape
-    # Points must be in Camera Optical Frame (Z=Forward)
     z = points[:, 2]
+
     valid_mask = z > 0.1
     z_safe = z.copy()
     z_safe[~valid_mask] = 1.0
@@ -57,7 +83,13 @@ def project_points_to_image(points, image, intrinsic_matrix):
     v = (points[:, 1] * intrinsic_matrix[1, 1] / z_safe) + intrinsic_matrix[1, 2]
 
     in_frame = (u >= 0) & (u < w) & (v >= 0) & (v < h)
-    final_mask = valid_mask & in_frame
+
+    # Normal Check (Backface Culling)
+    # Normals facing camera have Z < -0.2 in Optical Frame
+    nz = normals[:, 2]
+    facing_camera = nz < -0.2
+
+    final_mask = valid_mask & in_frame & facing_camera
 
     colors = np.zeros((len(points), 3), dtype=np.float64)
     u_valid = u[final_mask].astype(int)
@@ -73,7 +105,6 @@ def main():
         print(f"Error: Could not find {INPUT_FILE}")
         return
 
-    # --- STEP 1: LOAD ---
     print("Step 1: Reading Data...")
     reader = make_reader(open(INPUT_FILE, "rb"), decoder_factories=[DecoderFactory()])
     imu_data = []
@@ -98,21 +129,23 @@ def main():
 
     print(f"   Loaded: {len(lidar_msgs)} Scans, {len(images)} Images.")
 
-    # --- STEP 2: BUILD ---
+    # --- BUILD GEOMETRY ---
     print("Step 2: Building Geometry...")
     global_points = []
+
     for i, (log_time, scan_msg) in enumerate(lidar_msgs):
         angles = np.arange(scan_msg.angle_min, scan_msg.angle_max, scan_msg.angle_increment)
         count = min(len(angles), len(scan_msg.ranges))
         r = np.array(scan_msg.ranges[:count])
         a = angles[:count]
-        valid = (r > scan_msg.range_min) & (r < scan_msg.range_max)
+
+        valid = (r > MIN_LIDAR_DIST) & (r < scan_msg.range_max)
+
         x = r[valid] * np.cos(a[valid])
         y = r[valid] * np.sin(a[valid])
         z = np.zeros_like(x)
         pts = np.column_stack((x, y, z))
 
-        # Apply Fixed Calibrations
         pts = pts @ LIDAR_FIX.T
         raw_quat = get_interpolated_pose(log_time, imu_data)
         rot_matrix = (R.from_quat(raw_quat) * IMU_FIX).as_matrix()
@@ -126,61 +159,61 @@ def main():
     colors = np.ones_like(all_points) * 0.7
     pcd.colors = o3d.utility.Vector3dVector(colors)
 
-    # --- STEP 3: PAINT WITH FIX ---
-    print("Step 3: Painting with Axis Fix...")
+    print("   Estimating Normals...")
+    pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+
+    # --- PAINTING ---
+    print(f"Step 3: Painting (Pitch Adjustment: {CAM_PITCH} deg)...")
     if len(images) > 0:
         h, w, _ = images[0][1].shape
         focal_length = (w / 2) / np.tan(np.deg2rad(CAM_FOV_DEG) / 2)
         K = np.array([[focal_length, 0, w / 2], [0, focal_length, h / 2], [0, 0, 1]])
 
         paint_interval = max(1, len(images) // 40)
+
+        points_np = np.asarray(pcd.points)
+        normals_np = np.asarray(pcd.normals)
+
         for i in range(0, len(images), paint_interval):
             t, img = images[i]
 
             raw_quat = get_interpolated_pose(t, imu_data)
             robot_rot = (R.from_quat(raw_quat) * IMU_FIX).as_matrix()
 
-            # Transform to Robot Frame
-            pts_robot = all_points @ robot_rot.T
-
-            # Apply Offset
+            # Transform Points
+            pts_robot = points_np @ robot_rot.T
             pts_robot = pts_robot - CAM_OFFSET
+            pts_optical = pts_robot @ FINAL_ROBOT_TO_CAM.T
 
-            # THE FIX: Swap axes so Z is forward for the camera
-            pts_optical = pts_robot @ ROBOT_TO_CAM.T
+            # Transform Normals
+            norms_robot = normals_np @ robot_rot.T
+            norms_optical = norms_robot @ FINAL_ROBOT_TO_CAM.T
 
-            new_colors, mask = project_points_to_image(pts_optical, img, K)
+            new_colors, mask = project_points_with_normals(pts_optical, norms_optical, img, K)
+
             current_colors = np.asarray(pcd.colors)
             current_colors[mask] = new_colors[mask]
 
-    # --- STEP 4: MESH (RESTORED TO YOUR SETTINGS) ---
-    print("Step 4: Meshing (Restored Settings)...")
-
-    # Using your original cleaning settings
+    # --- MESHING ---
+    print("Step 4: Meshing...")
     pcd = pcd.voxel_down_sample(voxel_size=VOXEL_SIZE)
     pcd, ind = pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=2.0)
 
     pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
     pcd.orient_normals_consistent_tangent_plane(100)
 
-    # Standard Poisson (No cropping!)
-    print("   Running Poisson reconstruction...")
     mesh, densities = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(
         pcd, depth=POISSON_DEPTH, linear_fit=False
     )
 
-    # Using your original trim amount (0.01)
-    print("   Trimming excess geometry...")
     densities = np.asarray(densities)
     density_threshold = np.quantile(densities, TRIM_AMOUNT)
     vertices_to_remove = densities < density_threshold
     mesh.remove_vertices_by_mask(vertices_to_remove)
 
-    # NO CROP HERE - This keeps the shape exactly as you liked it.
-
     print(f"Saving to {OUTPUT_OBJ}...")
     o3d.io.write_triangle_mesh(OUTPUT_OBJ, mesh)
-    o3d.visualization.draw_geometries([mesh], window_name="Final Restored Mesh")
+    o3d.visualization.draw_geometries([mesh], window_name="Final Corrected Scan")
 
 
 if __name__ == "__main__":
