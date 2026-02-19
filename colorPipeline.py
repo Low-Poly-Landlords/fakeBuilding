@@ -27,7 +27,7 @@ CAM_FOV_DEG = 70.0
 # If windows are on the ceiling, try Pitch = -90.0
 # If windows are on the floor, try Pitch = 90.0
 # If windows are on the left wall, try Yaw = 90.0
-CAM_ROLL = 0.0
+CAM_ROLL = -17
 CAM_PITCH = -180.0  # <--- TRY THIS FIRST
 CAM_YAW = 0.0
 
