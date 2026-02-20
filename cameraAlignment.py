@@ -1,183 +1,158 @@
+import os
 import numpy as np
+import cv2
+import bisect
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider, Button
 from scipy.spatial.transform import Rotation as R
 from mcap.reader import make_reader
 from mcap_ros2.decoder import DecoderFactory
-import cv2
 
-# --- INPUT ---
+# --- CONFIGURATION ---
 INPUT_FILE = "newestScan.mcap"
 
-# --- INITIAL GUESSES ---
-INIT_ROLL = 0.0
-INIT_PITCH = -90.0
-INIT_YAW = 0.0
-INIT_X = 0.0
-INIT_Y = 0.0
-INIT_Z = 0.05
-CAM_FOV = 70.0
+# Base settings (Keep your existing offsets here)
+LIDAR_ROLL_OFFSET = 0.0
+LIDAR_PITCH_OFFSET = -20.0
+LIDAR_YAW_OFFSET = 0.0
+
+CAM_OFFSET = [0.0, 0.0, 0.05]
+CAM_FOV_DEG = 70.0
+CAM_ROLL = -17.0
+CAM_YAW = 0.0
+
+LIDAR_FIX = R.from_euler('xyz', [90 + LIDAR_ROLL_OFFSET, LIDAR_PITCH_OFFSET, LIDAR_YAW_OFFSET],
+                         degrees=True).as_matrix()
+IMU_FIX = R.from_euler('x', 90, degrees=True)
+BASE_ROBOT_TO_CAM = np.array([[0, -1, 0], [0, 0, -1], [1, 0, 0]])
 
 
-class CalibrationApp:
-    def __init__(self, frames):
-        self.frames = frames  # List of (scan_points, image_data)
-        self.current_idx = 0
-
-        self.fig, self.ax = plt.subplots(figsize=(10, 7))
-        plt.subplots_adjust(bottom=0.35)
-
-        # Sliders
-        self.ax_roll = plt.axes([0.15, 0.25, 0.65, 0.03])
-        self.ax_pitch = plt.axes([0.15, 0.20, 0.65, 0.03])
-        self.ax_yaw = plt.axes([0.15, 0.15, 0.65, 0.03])
-        self.ax_z = plt.axes([0.15, 0.10, 0.65, 0.03])
-
-        self.s_roll = Slider(self.ax_roll, 'Roll', -180, 180, valinit=INIT_ROLL)
-        self.s_pitch = Slider(self.ax_pitch, 'Pitch', -180, 180, valinit=INIT_PITCH)
-        self.s_yaw = Slider(self.ax_yaw, 'Yaw', -180, 180, valinit=INIT_YAW)
-        self.s_z = Slider(self.ax_z, 'Height (Z)', -0.5, 0.5, valinit=INIT_Z)
-
-        # Buttons
-        self.ax_prev = plt.axes([0.15, 0.025, 0.1, 0.04])
-        self.ax_next = plt.axes([0.26, 0.025, 0.1, 0.04])
-        self.b_prev = Button(self.ax_prev, 'Previous')
-        self.b_next = Button(self.ax_next, 'Next')
-
-        self.b_prev.on_clicked(self.prev_frame)
-        self.b_next.on_clicked(self.next_frame)
-
-        # Attach updates
-        self.s_roll.on_changed(self.update)
-        self.s_pitch.on_changed(self.update)
-        self.s_yaw.on_changed(self.update)
-        self.s_z.on_changed(self.update)
-
-        self.scatter = None
-        self.draw_frame()
-
-    def prev_frame(self, event):
-        self.current_idx = (self.current_idx - 1) % len(self.frames)
-        self.draw_frame()
-
-    def next_frame(self, event):
-        self.current_idx = (self.current_idx + 1) % len(self.frames)
-        self.draw_frame()
-
-    def draw_frame(self):
-        scan_points, image_data = self.frames[self.current_idx]
-
-        self.ax.clear()
-        self.ax.imshow(image_data)
-        self.ax.set_title(f"Frame {self.current_idx + 1} / {len(self.frames)} - Check Alignment")
-        self.scatter = self.ax.scatter([], [], c=[], cmap='jet', s=3, alpha=0.6)
-
-        self.update(0)
-
-    def update(self, val):
-        scan_points, image_data = self.frames[self.current_idx]
-        h, w, _ = image_data.shape
-        f = (w / 2) / np.tan(np.deg2rad(CAM_FOV) / 2)
-        K = np.array([[f, 0, w / 2], [0, f, h / 2], [0, 0, 1]])
-
-        # 1. Build Transform
-        r, p, y = self.s_roll.val, self.s_pitch.val, self.s_yaw.val
-        z_offset = self.s_z.val
-
-        rot = R.from_euler('xyz', [r, p, y], degrees=True).as_matrix()
-        base_fix = np.array([[0, -1, 0], [0, 0, -1], [1, 0, 0]])
-        full_rot = rot @ base_fix
-
-        # 2. Transform Points
-        pts_local = scan_points - [INIT_X, INIT_Y, z_offset]
-        pts_cam = pts_local @ full_rot.T
-
-        # 3. Project
-        z_vals = pts_cam[:, 2]
-        valid = z_vals > 0.1
-
-        u = (pts_cam[valid, 0] * K[0, 0] / z_vals[valid]) + K[0, 2]
-        v = (pts_cam[valid, 1] * K[1, 1] / z_vals[valid]) + K[1, 2]
-
-        in_view = (u >= 0) & (u < w) & (v >= 0) & (v < h)
-        u_final = u[in_view]
-        v_final = v[in_view]
-        z_final = z_vals[valid][in_view]
-
-        # Update Plot
-        self.scatter.set_offsets(np.column_stack((u_final, v_final)))
-        # Color by depth (Helpful for 3D checking)
-        self.scatter.set_array(z_final)
-        self.scatter.set_clim(0, 5)  # 0 to 5 meters range
-
-        self.fig.canvas.draw_idle()
-
-
-def get_frames(filename, num_frames=3):
-    print(f"Loading {num_frames} frames from {filename}...")
+def get_data(filename):
+    print(f"Extracting 1 Scan and 1 Image from {filename}...")
     reader = make_reader(open(filename, "rb"), decoder_factories=[DecoderFactory()])
 
-    frames = []
-
-    # We want to grab frames spread out over time
-    # This is a simple logic: Grab a frame every time we see a 'camera' msg
-    # provided we have a recent scan.
-
-    last_scan = None
-    frame_interval = 20  # Skip frames to get variety
-    count = 0
+    imu_data = []
+    scan_pts = None
+    img = None
+    found_scan = False
 
     for schema, channel, message, ros_msg in reader.iter_decoded_messages():
-        if channel.topic == "/scan":
-            # Store most recent scan
+        if channel.topic == "/imu/data":
+            q = [ros_msg.orientation.x, ros_msg.orientation.y, ros_msg.orientation.z, ros_msg.orientation.w]
+            imu_data.append((message.log_time, q))
+
+        elif channel.topic == "/scan" and not found_scan:
             angles = np.arange(ros_msg.angle_min, ros_msg.angle_max, ros_msg.angle_increment)
-            count_pts = min(len(angles), len(ros_msg.ranges))
-            r = np.array(ros_msg.ranges[:count_pts])
-            a = angles[:count_pts]
+            count = min(len(angles), len(ros_msg.ranges))
+            r = np.array(ros_msg.ranges[:count])
+            a = angles[:count]
+
             valid = (r > 1.0) & (r < 10.0)
             x = r[valid] * np.cos(a[valid])
             y = r[valid] * np.sin(a[valid])
             z = np.zeros_like(x)
-            LIDAR_FIX = R.from_euler('x', 90, degrees=True).as_matrix()
-            last_scan = np.column_stack((x, y, z)) @ LIDAR_FIX.T
 
-        elif channel.topic == "/camera/image_raw" and last_scan is not None:
-            count += 1
-            if count % frame_interval == 0:
-                width = getattr(ros_msg, "width", 640)
-                height = getattr(ros_msg, "height", 480)
-                np_arr = np.frombuffer(ros_msg.data, dtype=np.uint8)
-                img = np_arr.reshape((height, width, 3))
-                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            pts = np.column_stack((x, y, z)) @ LIDAR_FIX.T
 
-                frames.append((last_scan, img))
-                print(f"  Captured Frame {len(frames)}")
+            # Apply IMU
+            times = [x[0] for x in imu_data]
+            if len(times) > 0:
+                idx = bisect.bisect_left(times, message.log_time)
+                idx = min(max(idx, 0), len(times) - 1)
+                raw_quat = imu_data[idx][1]
+                rot_matrix = (R.from_quat(raw_quat) * IMU_FIX).as_matrix()
+                scan_pts = pts @ rot_matrix
+            else:
+                scan_pts = pts
 
-                if len(frames) >= num_frames:
-                    break
-    return frames
+            found_scan = True
+
+        elif channel.topic == "/camera/image_raw" and found_scan and img is None:
+            width = getattr(ros_msg, "width", 640)
+            height = getattr(ros_msg, "height", 480)
+            np_arr = np.frombuffer(ros_msg.data, dtype=np.uint8)
+            img = np_arr.reshape((height, width, 3))
+            break
+
+    return scan_pts, img
 
 
 def main():
-    frames = get_frames(INPUT_FILE, num_frames=4)
-    if not frames:
-        print("Error: Could not find frames.")
+    scan_pts, img = get_data(INPUT_FILE)
+    if scan_pts is None or img is None:
+        print("Could not load data.")
         return
 
-    print("\n--- INSTRUCTIONS ---")
-    print("1. Align dots on Frame 1.")
-    print("2. Click 'Next'. The dots will likely be misaligned.")
-    print("3. Adjust sliders until it looks good on BOTH Frame 1 and Frame 2.")
-    print("4. This 'locks' the 3rd axis.")
+    # 1. Create the Edge Distance Map
+    print("Computing Visual Edge Map...")
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    app = CalibrationApp(frames)
+    # Find hard edges in the image
+    edges = cv2.Canny(gray, 50, 150)
+
+    # Invert and calculate distance transform (0 at edges, increasing as you move away)
+    edges_inv = cv2.bitwise_not(edges)
+    dist_map = cv2.distanceTransform(edges_inv, cv2.DIST_L2, 5)
+
+    h, w = dist_map.shape
+    focal_length = (w / 2) / np.tan(np.deg2rad(CAM_FOV_DEG) / 2)
+    K = np.array([[focal_length, 0, w / 2], [0, focal_length, h / 2], [0, 0, 1]])
+
+    # 2. Sweep the Pitch
+    print("Sweeping Pitch values from -180 to 180...")
+    pitches = np.arange(-180, 180, 1.0)
+    scores = []
+
+    for pitch in pitches:
+        # Build Camera Transform
+        user_cam_fix = R.from_euler('xyz', [CAM_ROLL, pitch, CAM_YAW], degrees=True).as_matrix()
+        final_robot_to_cam = user_cam_fix @ BASE_ROBOT_TO_CAM
+
+        # Move points to camera frame
+        pts_cam = scan_pts - CAM_OFFSET
+        pts_optical = pts_cam @ final_robot_to_cam.T
+
+        # Project to 2D Image
+        z = pts_optical[:, 2]
+        valid = z > 0.1
+
+        if not np.any(valid):
+            scores.append(9999)  # Severe penalty if camera is looking backward
+            continue
+
+        u = (pts_optical[valid, 0] * K[0, 0] / z[valid]) + K[0, 2]
+        v = (pts_optical[valid, 1] * K[1, 1] / z[valid]) + K[1, 2]
+
+        # Filter points that land inside the image bounds
+        in_frame = (u >= 0) & (u < w - 1) & (v >= 0) & (v < h - 1)
+        u_in = u[in_frame].astype(int)
+        v_in = v[in_frame].astype(int)
+
+        if len(u_in) < 10:
+            scores.append(9999)
+            continue
+
+        # 3. Calculate Penalty Score (Mean distance to nearest edge)
+        penalty = np.mean(dist_map[v_in, u_in])
+        scores.append(penalty)
+
+    # 4. Find the Winner
+    best_idx = np.argmin(scores)
+    best_pitch = pitches[best_idx]
+
+    print("\n" + "=" * 40)
+    print(f"OPTIMAL CAM_PITCH FOUND: {best_pitch} degrees")
+    print("=" * 40 + "\n")
+
+    # 5. Show the Graph
+    plt.figure(figsize=(10, 5))
+    plt.plot(pitches, scores, label="Alignment Error")
+    plt.axvline(best_pitch, color='r', linestyle='--', label=f"Best Pitch: {best_pitch}°")
+    plt.title("Targetless Calibration: Pitch Auto-Tuner")
+    plt.xlabel("Pitch Angle (Degrees)")
+    plt.ylabel("Penalty Score (Lower is Better)")
+    plt.legend()
+    plt.grid(True)
     plt.show()
-
-    print("\n--- FINAL VALUES ---")
-    print(f"CAM_ROLL  = {app.s_roll.val}")
-    print(f"CAM_PITCH = {app.s_pitch.val}")
-    print(f"CAM_YAW   = {app.s_yaw.val}")
-    print(f"CAM_OFFSET = [{INIT_X}, {INIT_Y}, {app.s_z.val}]")
 
 
 if __name__ == "__main__":
