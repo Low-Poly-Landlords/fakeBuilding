@@ -8,6 +8,8 @@ from scipy.spatial.transform import Rotation as R
 from scipy.spatial import Delaunay
 from mcap.reader import make_reader
 from mcap_ros2.decoder import DecoderFactory
+import json
+import ezdxf
 
 # --- CONFIGURATION ---
 INPUT_FILE = "newestScan.mcap"
@@ -441,6 +443,67 @@ def main():
     # --- STEP 6: SAVE ---
     print(f"Saving to {OUTPUT_OBJ}...")
     o3d.io.write_triangle_mesh(OUTPUT_OBJ, final_rigid_mesh)
+
+    # ==========================================
+    # --- STEP 7: CAD EXPORT & ML MATERIAL DATA ---
+    # ==========================================
+    print("Step 7: Exporting CAD Floor Plan and Material Data...")
+
+    # 1. Export 2D Floor Plan as DXF (CAD format)
+    doc = ezdxf.new('R2010')
+    msp = doc.modelspace()
+    for i in range(num_pts):
+        p1 = poly_pts_meters[i]
+        p2 = poly_pts_meters[(i + 1) % num_pts]
+        msp.add_line((p1[0], p1[1]), (p2[0], p2[1]))
+
+    dxf_filename = "floor_plan.dxf"
+    doc.saveas(dxf_filename)
+    print(f"   Saved CAD floor plan to {dxf_filename}")
+
+    # 2. Extract Midpoint Colors for ML Classification
+    wall_materials = []
+    cumulative_dist = 0
+
+    # We know the atlas is 4096x4096 based on earlier code
+    atlas_h, atlas_w = atlas_img.shape[:2]
+
+    for i in range(num_pts):
+        p1 = poly_pts_meters[i]
+        p2 = poly_pts_meters[(i + 1) % num_pts]
+
+        # Find where this wall lives on the U-axis of the atlas
+        u_start = cumulative_dist / total_perimeter
+        u_end = (cumulative_dist + segment_lengths[i]) / total_perimeter
+
+        # Calculate the exact midpoint of the wall on the UV atlas
+        u_mid = (u_start + u_end) / 2.0
+        # The vertical walls are mapped to the top half of the atlas (V: 0.0 to 0.5)
+        # So the vertical midpoint is exactly 0.25
+        v_mid = 0.25
+
+        # Convert UV to actual pixel coordinates
+        px_x = int(u_mid * atlas_w)
+        px_y = int(v_mid * atlas_h)
+
+        # Sample the pixel color (OpenCV uses BGR, so we flip it to RGB)
+        b, g, r = atlas_img[px_y, px_x]
+
+        wall_materials.append({
+            "wall_id": i,
+            "start_pt_meters": [float(p1[0]), float(p1[1])],
+            "end_pt_meters": [float(p2[0]), float(p2[1])],
+            "length_meters": float(segment_lengths[i]),
+            "sampled_midpoint_rgb": [int(r), int(g), int(b)]
+        })
+
+        cumulative_dist += segment_lengths[i]
+
+    # Save to a JSON file so your future Python vision model can easily read it
+    json_filename = "wall_materials.json"
+    with open(json_filename, "w") as f:
+        json.dump(wall_materials, f, indent=4)
+    print(f"   Saved material data to {json_filename}")
 
     print("Opening Viewer...")
     o3d.visualization.draw_geometries([final_rigid_mesh], window_name="UV Mapped Architecture")
