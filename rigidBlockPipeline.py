@@ -5,32 +5,32 @@ import open3d as o3d
 import cv2
 import bisect
 from scipy.spatial.transform import Rotation as R
+from scipy.spatial import Delaunay
 from mcap.reader import make_reader
 from mcap_ros2.decoder import DecoderFactory
 
 # --- CONFIGURATION ---
 INPUT_FILE = "newestScan.mcap"
 OUTPUT_OBJ = "final_extruded_room.obj"
+TEXTURE_FILE = "room_texture_atlas.png"
 
 # 1. GHOST REMOVAL
 MIN_LIDAR_DIST = 1.0
 
-# 2. LIDAR CALIBRATION (Your Tuned Values)
+# 2. LIDAR CALIBRATION
 LIDAR_ROLL_OFFSET = 0.0
 LIDAR_PITCH_OFFSET = -20.0
 LIDAR_YAW_OFFSET = 0.0
 
-# 3. CAMERA CALIBRATION (THE FIX)
+# 3. CAMERA CALIBRATION (Restored)
 CAM_OFFSET = [0.0, 0.0, 0.05]
 CAM_FOV_DEG = 70.0
-
 CAM_ROLL = -17.0
 CAM_PITCH = -1.0
 CAM_YAW = 0.0
 
 # 4. EXTRUSION SETTINGS
 RESOLUTION = 0.02  # 2cm per pixel for the 2D floor plan
-SUBDIVISION_LEVEL = 6  # Increase to 7 if floor textures look blurry
 
 # --- TRANSFORMS ---
 LIDAR_FIX = R.from_euler('xyz', [
@@ -41,14 +41,14 @@ LIDAR_FIX = R.from_euler('xyz', [
 
 IMU_FIX = R.from_euler('x', 90, degrees=True)
 
-# Base: Robot Frame -> Camera Optical Frame
+# Base: Robot Frame -> Camera Optical Frame (Restored)
 BASE_ROBOT_TO_CAM = np.array([
     [0, -1, 0],
     [0, 0, -1],
     [1, 0, 0]
 ])
 
-# User Correction: Applied on top of the base
+# User Correction: Applied on top of the base (Restored)
 USER_CAM_FIX = R.from_euler('xyz', [CAM_ROLL, CAM_PITCH, CAM_YAW], degrees=True).as_matrix()
 FINAL_ROBOT_TO_CAM = USER_CAM_FIX @ BASE_ROBOT_TO_CAM
 
@@ -65,38 +65,150 @@ def get_interpolated_pose(target_time, pose_data):
     return pose_data[idx - 1][1]
 
 
-def project_points_with_smarter_normals(points, normals, image, intrinsic_matrix):
-    h, w, _ = image.shape
-    z = points[:, 2]
+def bake_walls_to_atlas(images, imu_data, poly_pts_meters, segment_lengths, total_perimeter,
+                        ROOM_MIN_Z, ROOM_MAX_Z, min_x, max_x, min_y, max_y, valid_simplices,
+                        K, atlas_img, cam_offset, base_to_cam):
+    atlas_h, atlas_w, _ = atlas_img.shape
+    cam_h, cam_w = images[0][1].shape[:2]
 
-    valid_mask = z > 0.1
-    z_safe = z.copy()
-    z_safe[~valid_mask] = 1.0
+    # Winner-Takes-All Score Map (replaces the blurry weight_map)
+    score_map = np.zeros((atlas_h, atlas_w), dtype=np.float32) - 1.0
 
-    u = (points[:, 0] * intrinsic_matrix[0, 0] / z_safe) + intrinsic_matrix[0, 2]
-    v = (points[:, 1] * intrinsic_matrix[1, 1] / z_safe) + intrinsic_matrix[1, 2]
+    print("   Baking camera images into UV Atlas (Clean Corner Method)...")
+    paint_interval = max(1, len(images) // 40)
 
-    in_frame = (u >= 0) & (u < w) & (v >= 0) & (v < h)
+    for i in range(0, len(images), paint_interval):
+        t, img = images[i]
+        raw_quat = get_interpolated_pose(t, imu_data)
+        robot_rot = (R.from_quat(raw_quat) * IMU_FIX).as_matrix()
 
-    # Calculate Viewing Angle Score
-    # In the optical frame, the camera looks down the +Z axis.
-    # A wall perfectly facing the camera has a normal of [0, 0, -1].
-    nz = normals[:, 2]
-    view_scores = -nz
+        # ==========================================
+        # 1. PROCESS VERTICAL WALLS
+        # ==========================================
+        cumulative_dist = 0
+        for j in range(len(poly_pts_meters)):
+            p1 = poly_pts_meters[j]
+            p2 = poly_pts_meters[(j + 1) % len(poly_pts_meters)]
 
-    # Strict cut-off: Only paint if the camera is facing the wall directly (Score > 0.3)
-    facing_camera = view_scores > 0.3
+            wall_3d = np.array([
+                [p1[0], p1[1], ROOM_MIN_Z],
+                [p2[0], p2[1], ROOM_MIN_Z],
+                [p2[0], p2[1], ROOM_MAX_Z],
+                [p1[0], p1[1], ROOM_MAX_Z]
+            ])
 
-    final_mask = valid_mask & in_frame & facing_camera
+            pts_robot = wall_3d @ robot_rot - cam_offset
+            pts_optical = pts_robot @ base_to_cam.T
+            z = pts_optical[:, 2]
 
-    colors = np.zeros((len(points), 3), dtype=np.float64)
-    u_valid = u[final_mask].astype(int)
-    v_valid = v[final_mask].astype(int)
+            # If any corner is behind the camera, skip to prevent math explosions
+            if np.any(z < 0.1):
+                cumulative_dist += segment_lengths[j]
+                continue
 
-    img_colors = image[v_valid, u_valid, ::-1] / 255.0
-    colors[final_mask] = img_colors
+            u_cam = (pts_optical[:, 0] * K[0, 0] / z) + K[0, 2]
+            v_cam = (pts_optical[:, 1] * K[1, 1] / z) + K[1, 2]
 
-    return colors, view_scores, final_mask
+            if np.all(u_cam < 0) or np.all(u_cam > cam_w) or np.all(v_cam < 0) or np.all(v_cam > cam_h):
+                cumulative_dist += segment_lengths[j]
+                continue
+
+            cam_corners = np.column_stack((u_cam, v_cam)).astype(np.float32)
+
+            u_start = cumulative_dist / total_perimeter
+            u_end = (cumulative_dist + segment_lengths[j]) / total_perimeter
+            v_bottom, v_top = 0.5, 0.0
+
+            atlas_corners = np.array([
+                [u_start * atlas_w, v_bottom * atlas_h],
+                [u_end * atlas_w, v_bottom * atlas_h],
+                [u_end * atlas_w, v_top * atlas_h],
+                [u_start * atlas_w, v_top * atlas_h]
+            ], dtype=np.float32)
+
+            H, _ = cv2.findHomography(cam_corners, atlas_corners)
+            if H is not None:
+                warped_img = cv2.warpPerspective(img, H, (atlas_w, atlas_h))
+                mask = np.zeros((atlas_h, atlas_w), dtype=np.uint8)
+                cv2.fillConvexPoly(mask, atlas_corners.astype(np.int32), 255)
+
+                # Score based on how centered the wall is in the photo
+                cx, cy = np.mean(u_cam), np.mean(v_cam)
+                dist_from_center = np.sqrt((cx - cam_w / 2) ** 2 + (cy - cam_h / 2) ** 2)
+                view_score = 10000.0 - dist_from_center
+
+                better_mask = (mask > 0) & (view_score > score_map)
+                atlas_img[better_mask] = warped_img[better_mask]
+                score_map[better_mask] = view_score
+
+            cumulative_dist += segment_lengths[j]
+
+        # ==========================================
+        # 2. PROCESS FLOOR & CEILING TRIANGLES
+        # ==========================================
+        for simplex in valid_simplices:
+            p1 = poly_pts_meters[simplex[0]]
+            p2 = poly_pts_meters[simplex[1]]
+            p3 = poly_pts_meters[simplex[2]]
+
+            # The Parallelogram Trick: Compute a 4th dummy point to satisfy findHomography
+            p4 = p2 + p3 - p1
+
+            for is_floor in [True, False]:
+                Z_LVL = ROOM_MIN_Z if is_floor else ROOM_MAX_Z
+
+                plane_3d = np.array([
+                    [p1[0], p1[1], Z_LVL],
+                    [p2[0], p2[1], Z_LVL],
+                    [p3[0], p3[1], Z_LVL],
+                    [p4[0], p4[1], Z_LVL]
+                ])
+
+                pts_robot = plane_3d @ robot_rot - cam_offset
+                pts_optical = pts_robot @ base_to_cam.T
+                z = pts_optical[:, 2]
+
+                if np.any(z < 0.1):
+                    continue
+
+                u_cam = (pts_optical[:, 0] * K[0, 0] / z) + K[0, 2]
+                v_cam = (pts_optical[:, 1] * K[1, 1] / z) + K[1, 2]
+
+                if np.all(u_cam[:3] < 0) or np.all(u_cam[:3] > cam_w) or np.all(v_cam[:3] < 0) or np.all(
+                        v_cam[:3] > cam_h):
+                    continue
+
+                cam_corners = np.column_stack((u_cam, v_cam)).astype(np.float32)
+
+                # Map to Atlas
+                atlas_corners = []
+                for pt in [p1, p2, p3, p4]:
+                    u = ((pt[0] - min_x) / (max_x - min_x)) * 0.5
+                    v = ((pt[1] - min_y) / (max_y - min_y)) * 0.5 + 0.5
+                    if not is_floor:
+                        u += 0.5  # Shift ceiling to the right half of the atlas
+                    atlas_corners.append([u * atlas_w, v * atlas_h])
+
+                atlas_corners = np.array(atlas_corners, dtype=np.float32)
+
+                H, _ = cv2.findHomography(cam_corners, atlas_corners)
+                if H is not None:
+                    warped_img = cv2.warpPerspective(img, H, (atlas_w, atlas_h))
+
+                    # Create mask using ONLY the original 3 points (ignoring the 4th dummy point)
+                    mask = np.zeros((atlas_h, atlas_w), dtype=np.uint8)
+                    tri_pts = atlas_corners[:3].astype(np.int32)
+                    cv2.fillConvexPoly(mask, tri_pts, 255)
+
+                    cx, cy = np.mean(u_cam[:3]), np.mean(v_cam[:3])
+                    dist_from_center = np.sqrt((cx - cam_w / 2) ** 2 + (cy - cam_h / 2) ** 2)
+                    view_score = 10000.0 - dist_from_center
+
+                    better_mask = (mask > 0) & (view_score > score_map)
+                    atlas_img[better_mask] = warped_img[better_mask]
+                    score_map[better_mask] = view_score
+
+    return atlas_img
 
 
 def main():
@@ -108,7 +220,7 @@ def main():
     reader = make_reader(open(INPUT_FILE, "rb"), decoder_factories=[DecoderFactory()])
     imu_data = []
     lidar_msgs = []
-    images = []
+    images = []  # Restored!
 
     for schema, channel, message, ros_msg in reader.iter_decoded_messages():
         if channel.topic == "/imu/data":
@@ -116,7 +228,7 @@ def main():
             imu_data.append((message.log_time, q))
         elif channel.topic == "/scan":
             lidar_msgs.append((message.log_time, ros_msg))
-        elif channel.topic == "/camera/image_raw":
+        elif channel.topic == "/camera/image_raw": # Restored!
             try:
                 width = getattr(ros_msg, "width", 640)
                 height = getattr(ros_msg, "height", 480)
@@ -161,7 +273,6 @@ def main():
     mid_z = (ROOM_MAX_Z + ROOM_MIN_Z) / 2.0
     slice_thickness = 0.2
 
-    print(f"   Slicing room at Z={mid_z:.2f}m...")
     slice_mask = (all_pts[:, 2] > (mid_z - slice_thickness)) & (all_pts[:, 2] < (mid_z + slice_thickness))
     slice_pts = all_pts[slice_mask]
 
@@ -182,58 +293,59 @@ def main():
     for x, y in zip(px, py):
         cv2.circle(floor_plan, (x, y), radius=2, color=255, thickness=-1)
 
-    print("   Tracing structural perimeter...")
-
-    # 1. Thicken the dots into solid lines
     kernel = np.ones((7, 7), np.uint8)
     dilated = cv2.dilate(floor_plan, kernel, iterations=2)
-
-    # 2. THE FIX: Seal the gaps (Virtual Caulk)
-    # This huge kernel bridges gaps (like doorways) so the tracer can't leak inside
     close_kernel = np.ones((40, 40), np.uint8)
     closed_plan = cv2.morphologyEx(dilated, cv2.MORPH_CLOSE, close_kernel)
 
-    # 3. Find the single outermost boundary
     contours, _ = cv2.findContours(closed_plan, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
     if not contours:
         print("Error: Could not find walls in the 2D slice.")
         return
 
     main_contour = max(contours, key=cv2.contourArea)
-
-    # 4. Optional: Force a purely convex shape (Rubber Band effect)
-    # Uncomment this next line if your room is a simple rectangle and you want it perfectly solid.
-    # Do not use this if your room is L-shaped.
-    # main_contour = cv2.convexHull(main_contour)
-
     epsilon = 0.015 * cv2.arcLength(main_contour, True)
     approx_polygon = cv2.approxPolyDP(main_contour, epsilon, True)
 
-    # Save 2D Floor Plan Image
-    final_floor_plan = np.ones((img_h, img_w, 3), dtype=np.uint8) * 255
-    cv2.drawContours(final_floor_plan, [approx_polygon], -1, (0, 0, 0), 3)
-    cv2.imwrite("floor_plan.jpg", final_floor_plan)
-    print("   Saved 2D slice as 'floor_plan.jpg'")
-
-    print("   Extruding walls to floor and ceiling...")
     vertices = []
     triangles = []
-    vertex_colors = []
-    poly_pts = approx_polygon.reshape(-1, 2)
-    num_pts = len(poly_pts)
+    uvs = []
 
-    base_color = [0.5, 0.5, 0.5]
+    poly_pts_pixels = approx_polygon.reshape(-1, 2)
+    num_pts = len(poly_pts_pixels)
+
+    poly_pts_meters = []
+    for p in poly_pts_pixels:
+        xm = (p[0] * RESOLUTION) + min_x
+        ym = (p[1] * RESOLUTION) + min_y
+        poly_pts_meters.append([xm, ym])
+    poly_pts_meters = np.array(poly_pts_meters)
+
+    total_perimeter = 0
+    segment_lengths = []
+    for i in range(num_pts):
+        p1 = poly_pts_meters[i]
+        p2 = poly_pts_meters[(i + 1) % num_pts]
+        dist = np.linalg.norm(p2 - p1)
+        segment_lengths.append(dist)
+        total_perimeter += dist
+
+    print("Step 4: Unwrapping UVs...")
 
     # 1. Extrude Walls
+    cumulative_dist = 0
     for i in range(num_pts):
-        p1 = poly_pts[i]
-        p2 = poly_pts[(i + 1) % num_pts]
+        p1 = poly_pts_meters[i]
+        p2 = poly_pts_meters[(i + 1) % num_pts]
+        x1, y1 = p1
+        x2, y2 = p2
 
-        x1 = (p1[0] * RESOLUTION) + min_x
-        y1 = (p1[1] * RESOLUTION) + min_y
-        x2 = (p2[0] * RESOLUTION) + min_x
-        y2 = (p2[1] * RESOLUTION) + min_y
+        u_start = cumulative_dist / total_perimeter
+        cumulative_dist += segment_lengths[i]
+        u_end = cumulative_dist / total_perimeter
+
+        v_bottom = 0.5
+        v_top = 0.0
 
         v_idx = len(vertices)
         vertices.extend([
@@ -242,96 +354,96 @@ def main():
             [x2, y2, ROOM_MAX_Z],
             [x1, y1, ROOM_MAX_Z]
         ])
-        triangles.extend([[v_idx, v_idx + 1, v_idx + 2], [v_idx, v_idx + 2, v_idx + 3]])
-        vertex_colors.extend([base_color] * 4)
 
-    # 2. Floor Cap (Counter-Clockwise to point UP)
-    floor_idx = len(vertices)
-    vertices.extend([
-        [min_x, min_y, ROOM_MIN_Z],
-        [max_x, min_y, ROOM_MIN_Z],
-        [max_x, max_y, ROOM_MIN_Z],
-        [min_x, max_y, ROOM_MIN_Z]
-    ])
-    triangles.extend([[floor_idx, floor_idx + 1, floor_idx + 2], [floor_idx, floor_idx + 2, floor_idx + 3]])
-    vertex_colors.extend([[0.3, 0.3, 0.3]] * 4)
+        triangles.append([v_idx, v_idx + 1, v_idx + 2])
+        uvs.extend([[u_start, v_bottom], [u_end, v_bottom], [u_end, v_top]])
 
-    # 3. Ceiling Cap (Clockwise to point DOWN)
-    ceil_idx = len(vertices)
-    vertices.extend([
-        [min_x, min_y, ROOM_MAX_Z],
-        [max_x, min_y, ROOM_MAX_Z],
-        [max_x, max_y, ROOM_MAX_Z],
-        [min_x, max_y, ROOM_MAX_Z]
-    ])
-    triangles.extend([[ceil_idx, ceil_idx + 2, ceil_idx + 1], [ceil_idx, ceil_idx + 3, ceil_idx + 2]])
-    vertex_colors.extend([[0.9, 0.9, 0.9]] * 4)
+        triangles.append([v_idx, v_idx + 2, v_idx + 3])
+        uvs.extend([[u_start, v_bottom], [u_end, v_top], [u_start, v_top]])
 
+    # 2. Triangulate Floor and Ceiling
+    tri = Delaunay(poly_pts_pixels)
+    valid_simplices = []
+    for simplex in tri.simplices:
+        pts = poly_pts_pixels[simplex]
+        centroid = np.mean(pts, axis=0)
+        if cv2.pointPolygonTest(approx_polygon, (centroid[0], centroid[1]), False) >= 0:
+            valid_simplices.append(simplex)
+
+    # Floor Cap
+    floor_start_idx = len(vertices)
+    for p in poly_pts_meters:
+        vertices.append([p[0], p[1], ROOM_MIN_Z])
+
+    for simplex in valid_simplices:
+        triangles.append([
+            floor_start_idx + simplex[0],
+            floor_start_idx + simplex[1],
+            floor_start_idx + simplex[2]
+        ])
+        for idx in simplex:
+            px, py = poly_pts_meters[idx]
+            u = ((px - min_x) / (max_x - min_x)) * 0.5
+            v = ((py - min_y) / (max_y - min_y)) * 0.5 + 0.5
+            uvs.append([u, v])
+
+    # Ceiling Cap
+    ceil_start_idx = len(vertices)
+    for p in poly_pts_meters:
+        vertices.append([p[0], p[1], ROOM_MAX_Z])
+
+    for simplex in valid_simplices:
+        triangles.append([
+            ceil_start_idx + simplex[0],
+            ceil_start_idx + simplex[2],
+            ceil_start_idx + simplex[1]
+        ])
+        for idx in [0, 2, 1]:
+            px, py = poly_pts_meters[simplex[idx]]
+            u = ((px - min_x) / (max_x - min_x)) * 0.5 + 0.5
+            v = ((py - min_y) / (max_y - min_y)) * 0.5 + 0.5
+            uvs.append([u, v])
+
+    # --- STEP 5: ASSEMBLE MESH AND BAKE TEXTURE ---
+    # FIXED: This section is now properly un-indented out of the ceiling loop!
+    print("Step 5: Applying Texture Atlas...")
     final_rigid_mesh = o3d.geometry.TriangleMesh()
     final_rigid_mesh.vertices = o3d.utility.Vector3dVector(vertices)
     final_rigid_mesh.triangles = o3d.utility.Vector3iVector(triangles)
-    final_rigid_mesh.vertex_colors = o3d.utility.Vector3dVector(vertex_colors)
+    final_rigid_mesh.triangle_uvs = o3d.utility.Vector2dVector(uvs)
 
-    # --- STEP 4: PREPARE MESH CANVAS ---
-    print("Step 4: Subdividing Mesh for High-Res Painting...")
-    # This slices the flat walls/floors into thousands of tiny triangles to hold pixel data
-    final_rigid_mesh = final_rigid_mesh.subdivide_midpoint(number_of_iterations=SUBDIVISION_LEVEL)
-    # After final_rigid_mesh = final_rigid_mesh.subdivide_midpoint(...)
-    num_vertices = len(final_rigid_mesh.vertices)
-    vertex_scores = np.zeros(num_vertices, dtype=np.float64) - 1.0  # Start with terrible scores
-    final_rigid_mesh.compute_vertex_normals()
+    # 1. Generate the blank canvas
+    atlas_img = np.zeros((4096, 4096, 3), dtype=np.uint8)
 
-    # --- STEP 5: PAINT THE RIGID MESH ---
-    print(f"Step 5: Painting Extruded Architecture (Pitch: {CAM_PITCH} deg)...")
+    # 2. Setup Camera Intrinsics
     if len(images) > 0:
         h, w, _ = images[0][1].shape
         focal_length = (w / 2) / np.tan(np.deg2rad(CAM_FOV_DEG) / 2)
         K = np.array([[focal_length, 0, w / 2], [0, focal_length, h / 2], [0, 0, 1]])
 
-        paint_interval = max(1, len(images) // 40)
+        # 3. Bake the images onto the atlas!
+        atlas_img = bake_walls_to_atlas(
+            images, imu_data, poly_pts_meters, segment_lengths, total_perimeter,
+            ROOM_MIN_Z, ROOM_MAX_Z, min_x, max_x, min_y, max_y, valid_simplices,
+            K, atlas_img, CAM_OFFSET, FINAL_ROBOT_TO_CAM
+        )
 
-        points_np = np.asarray(final_rigid_mesh.vertices)
-        normals_np = np.asarray(final_rigid_mesh.vertex_normals)
+    # Convert BGR (OpenCV) to RGB (Open3D)
+    atlas_img_rgb = cv2.cvtColor(atlas_img, cv2.COLOR_BGR2RGB)
 
-        # Array to track the "best" viewing angle for every single vertex
-        num_vertices = len(points_np)
-        vertex_scores = np.zeros(num_vertices, dtype=np.float64) - 1.0
+    texture = o3d.geometry.Image(atlas_img_rgb)
+    final_rigid_mesh.textures = [texture]
+    final_rigid_mesh.triangle_material_ids = o3d.utility.IntVector(np.zeros(len(triangles), dtype=np.int32))
 
-        for i in range(0, len(images), paint_interval):
-            t, img = images[i]
-
-            raw_quat = get_interpolated_pose(t, imu_data)
-            robot_rot = (R.from_quat(raw_quat) * IMU_FIX).as_matrix()
-
-            # --- THE BUG FIX: Removed .T so we correctly reverse the rotation ---
-            pts_robot = points_np @ robot_rot
-            pts_robot = pts_robot - CAM_OFFSET
-            pts_optical = pts_robot @ FINAL_ROBOT_TO_CAM.T
-
-            norms_robot = normals_np @ robot_rot
-            norms_optical = norms_robot @ FINAL_ROBOT_TO_CAM.T
-            # --------------------------------------------------------------------
-
-            # Project using the new smarter normals
-            new_colors, new_scores, mask = project_points_with_smarter_normals(pts_optical, norms_optical, img, K)
-
-            # --- THE TEXTURE UPGRADE: Only paint if it's a better angle ---
-            current_colors = np.copy(np.asarray(final_rigid_mesh.vertex_colors))
-
-            # Find vertices where this image is BOTH in-frame AND has a better view score
-            better_view_mask = mask & (new_scores > vertex_scores)
-
-            current_colors[better_view_mask] = new_colors[better_view_mask]
-            vertex_scores[better_view_mask] = new_scores[better_view_mask]
-
-            final_rigid_mesh.vertex_colors = o3d.utility.Vector3dVector(current_colors)
+    cv2.imwrite(TEXTURE_FILE, atlas_img)
+    print(f"   Saved baked atlas image to {TEXTURE_FILE}")
 
     # --- STEP 6: SAVE ---
     print(f"Saving to {OUTPUT_OBJ}...")
     o3d.io.write_triangle_mesh(OUTPUT_OBJ, final_rigid_mesh)
 
     print("Opening Viewer...")
-    o3d.visualization.draw_geometries([final_rigid_mesh], window_name="Textured 2.5D Architecture")
+    o3d.visualization.draw_geometries([final_rigid_mesh], window_name="UV Mapped Architecture")
 
 
 if __name__ == "__main__":
