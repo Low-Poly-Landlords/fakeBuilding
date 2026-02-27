@@ -9,8 +9,8 @@ from mcap.reader import make_reader
 from mcap_ros2.decoder import DecoderFactory
 
 # --- CONFIGURATION ---
-INPUT_FILE = "newestScan.mcap"
-OUTPUT_OBJ = "newestScan_camera_fixed.obj"
+INPUT_FILE = "enlabopenroom.mcap"
+OUTPUT_OBJ = "enlabopenroom.obj"
 
 # 1. GHOST REMOVAL
 MIN_LIDAR_DIST = 1.0

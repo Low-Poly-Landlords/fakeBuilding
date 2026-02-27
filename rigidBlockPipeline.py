@@ -12,9 +12,9 @@ import json
 import ezdxf
 
 # --- CONFIGURATION ---
-INPUT_FILE = "newestScan.mcap"
-OUTPUT_OBJ = "final_extruded_room.obj"
-TEXTURE_FILE = "room_texture_atlas.png"
+INPUT_FILE = "enlabopenroom.mcap"
+OUTPUT_OBJ = "enlabopenroom_rigid.obj"
+TEXTURE_FILE = "endlabopenroom_texture.png"
 
 # 1. GHOST REMOVAL
 MIN_LIDAR_DIST = 1.0
@@ -28,7 +28,7 @@ LIDAR_YAW_OFFSET = 0.0
 CAM_OFFSET = [0.0, 0.0, 0.05]
 CAM_FOV_DEG = 70.0
 CAM_ROLL = -17.0
-CAM_PITCH = -1.0
+CAM_PITCH = 174
 CAM_YAW = 0.0
 
 # 4. EXTRUSION SETTINGS

@@ -8,7 +8,7 @@ from mcap.reader import make_reader
 from mcap_ros2.decoder import DecoderFactory
 
 # --- CONFIGURATION ---
-INPUT_FILE = "newestScan.mcap"
+INPUT_FILE = "enlabopenroom.mcap"
 
 # Base settings (Keep your existing offsets here)
 LIDAR_ROLL_OFFSET = 0.0

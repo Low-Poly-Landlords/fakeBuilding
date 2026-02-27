@@ -24,6 +24,8 @@ The files in this project serve 2 purposes:
     - rigidBlockPipeline
         - This generates a "snapped to a grid" version of the room with the most clear images projected onto the wall. (how the images are projected will be changed in the future)
         - This also generates a .dxf file containing a 2d floor plan, with material properties in the walls that can later be used to simulate attenuation
+        - Filenames must be changed within the code, at the top
     - colorPipeline
         - This generates a voxelized version of the room, where the voxels are painted the color of the "most commmon" color that appears in that spot in the camera data.
         - This DOES NOT generate a 2d floor plan as of right now
+        - Filename must be changed in the code itself, at the top of the file
