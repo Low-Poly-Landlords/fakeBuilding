@@ -8,13 +8,14 @@ from scipy.spatial.transform import Rotation as R
 from scipy.spatial import Delaunay
 from mcap.reader import make_reader
 from mcap_ros2.decoder import DecoderFactory
+from mcap_zstd_helper import iter_decoded_messages_with_zstd
 import json
 import ezdxf
 
 # --- CONFIGURATION ---
-INPUT_FILE = "enlabopenroom.mcap"
-OUTPUT_OBJ = "enlabopenroom_rigid.obj"
-TEXTURE_FILE = "endlabopenroom_texture.png"
+INPUT_FILE = "raw_scan_0.mcap"
+OUTPUT_OBJ = "newest_scan.obj"
+TEXTURE_FILE = "newest_scan.png"
 
 # 1. GHOST REMOVAL
 MIN_LIDAR_DIST = 1.0
@@ -224,7 +225,7 @@ def main():
     lidar_msgs = []
     images = []  # Restored!
 
-    for schema, channel, message, ros_msg in reader.iter_decoded_messages():
+    for schema, channel, message, ros_msg in iter_decoded_messages_with_zstd(reader):
         if channel.topic == "/imu/data":
             q = [ros_msg.orientation.x, ros_msg.orientation.y, ros_msg.orientation.z, ros_msg.orientation.w]
             imu_data.append((message.log_time, q))
@@ -449,23 +450,9 @@ def main():
     # ==========================================
     print("Step 7: Exporting CAD Floor Plan and Material Data...")
 
-    # 1. Export 2D Floor Plan as DXF (CAD format)
-    doc = ezdxf.new('R2010')
-    msp = doc.modelspace()
-    for i in range(num_pts):
-        p1 = poly_pts_meters[i]
-        p2 = poly_pts_meters[(i + 1) % num_pts]
-        msp.add_line((p1[0], p1[1]), (p2[0], p2[1]))
-
-    dxf_filename = "floor_plan.dxf"
-    doc.saveas(dxf_filename)
-    print(f"   Saved CAD floor plan to {dxf_filename}")
-
-    # 2. Extract Midpoint Colors for ML Classification
+    # 1. Analyze Wall Colors from Texture Atlas
     wall_materials = []
     cumulative_dist = 0
-
-    # We know the atlas is 4096x4096 based on earlier code
     atlas_h, atlas_w = atlas_img.shape[:2]
 
     for i in range(num_pts):
@@ -475,19 +462,22 @@ def main():
         # Find where this wall lives on the U-axis of the atlas
         u_start = cumulative_dist / total_perimeter
         u_end = (cumulative_dist + segment_lengths[i]) / total_perimeter
-
-        # Calculate the exact midpoint of the wall on the UV atlas
         u_mid = (u_start + u_end) / 2.0
-        # The vertical walls are mapped to the top half of the atlas (V: 0.0 to 0.5)
-        # So the vertical midpoint is exactly 0.25
-        v_mid = 0.25
-
-        # Convert UV to actual pixel coordinates
         px_x = int(u_mid * atlas_w)
-        px_y = int(v_mid * atlas_h)
 
-        # Sample the pixel color (OpenCV uses BGR, so we flip it to RGB)
-        b, g, r = atlas_img[px_y, px_x]
+        # Extract the vertical column of pixels at the wall's midpoint
+        # Walls are in the top half of the atlas (V from 0.0 to 0.5)
+        color_column_bgr = atlas_img[0:int(atlas_h * 0.5), px_x]
+
+        # Find the most frequent color in the column
+        colors, counts = np.unique(color_column_bgr.reshape(-1, 3), axis=0, return_counts=True)
+        
+        # Handle case where column is empty or has no colors
+        if len(colors) > 0:
+            most_frequent_bgr = colors[counts.argmax()]
+            b, g, r = most_frequent_bgr
+        else:
+            r, g, b = 0, 0, 0 # Default to black if no color found
 
         wall_materials.append({
             "wall_id": i,
@@ -499,7 +489,24 @@ def main():
 
         cumulative_dist += segment_lengths[i]
 
-    # Save to a JSON file so your future Python vision model can easily read it
+    # 2. Export 2D Floor Plan as DXF with Wall Colors
+    doc = ezdxf.new('R2010')
+    msp = doc.modelspace()
+    for i in range(num_pts):
+        p1 = poly_pts_meters[i]
+        p2 = poly_pts_meters[(i + 1) % num_pts]
+        material_info = wall_materials[i]
+        r, g, b = material_info["sampled_midpoint_rgb"]
+
+        # Add line to DXF and set its color
+        line = msp.add_line((p1[0], p1[1]), (p2[0], p2[1]))
+        line.dxf.true_color = ezdxf.rgb2int((r, g, b))
+
+    dxf_filename = "floor_plan.dxf"
+    doc.saveas(dxf_filename)
+    print(f"   Saved CAD floor plan to {dxf_filename}")
+
+    # 3. Save material data to a JSON file
     json_filename = "wall_materials.json"
     with open(json_filename, "w") as f:
         json.dump(wall_materials, f, indent=4)
