@@ -29,3 +29,9 @@ The files in this project serve 2 purposes:
         - This generates a voxelized version of the room, where the voxels are painted the color of the "most commmon" color that appears in that spot in the camera data.
         - This DOES NOT generate a 2d floor plan as of right now
         - Filename must be changed in the code itself, at the top of the file
+
+## Other programs: ##
+- dxf_viewer.py
+    - This program can open and view .dxf files, it's mostly to make sure that everything is working fine
+- mcap_zstd_helper.py
+    - This program is called in order to unzip the .mcap files, DO NOT DELETE THIS
