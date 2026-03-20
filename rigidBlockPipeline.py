@@ -214,6 +214,83 @@ def bake_walls_to_atlas(images, imu_data, poly_pts_meters, segment_lengths, tota
     return atlas_img
 
 
+def filter_sharp_angles(polygon, length_scale_for_filter):
+    """
+    Filters a polygon to remove sharp concave "juts" AND sharp convex "spikes"
+    that are unlikely in a building plan.
+    It iteratively removes the worst offending point until no more points meet the criteria.
+    """
+    pixel_threshold = length_scale_for_filter * 4.0
+    MIN_CONVEX_ANGLE = 75  # Minimum angle for a "real" corner.
+
+    while True:
+        points = polygon.reshape(-1, 2)
+        num_points = len(points)
+        if num_points < 4:
+            break
+
+        signed_area = cv2.contourArea(points.astype(np.float32), oriented=True)
+        is_ccw = signed_area > 0
+
+        worst_candidate_idx = -1
+        highest_score = 0  # Higher score = better candidate for removal
+
+        for i in range(num_points):
+            p_prev = points[(i - 1 + num_points) % num_points]
+            p_curr = points[i]
+            p_next = points[(i + 1) % num_points]
+
+            v_prev = p_prev - p_curr
+            v_next = p_next - p_curr
+
+            len_prev = np.linalg.norm(v_prev)
+            len_next = np.linalg.norm(v_next)
+
+            if len_prev == 0 or len_next == 0:
+                continue
+
+            cross_product_z = v_prev[0] * v_next[1] - v_prev[1] * v_next[0]
+
+            is_concave = (is_ccw and cross_product_z < 0) or \
+                         (not is_ccw and cross_product_z > 0)
+            is_convex = (is_ccw and cross_product_z > 0) or \
+                        (not is_ccw and cross_product_z < 0)
+
+            angle_at_vertex = np.degrees(np.arccos(np.clip(np.dot(v_prev, v_next) / (len_prev * len_next), -1, 1)))
+
+            should_score = False
+            # Condition for removing a concave "dent"
+            if is_concave and len_prev < pixel_threshold and len_next < pixel_threshold:
+                should_score = True
+
+            # Condition for removing a convex "spike"
+            if is_convex and angle_at_vertex < MIN_CONVEX_ANGLE and len_prev < pixel_threshold and len_next < pixel_threshold:
+                should_score = True
+
+            if should_score:
+                # The score is the distance of the point from the line connecting its neighbors.
+                # This works for both concave and convex artifacts.
+                line_vec = p_next - p_prev
+                if np.linalg.norm(line_vec) == 0: continue
+
+                area = np.abs(np.cross(line_vec, p_curr - p_prev))
+                dist_score = area / np.linalg.norm(line_vec)
+
+                if dist_score > highest_score:
+                    highest_score = dist_score
+                    worst_candidate_idx = i
+
+        if worst_candidate_idx != -1:
+            # Remove the point that creates the worst artifact and restart the process
+            points = np.delete(points, worst_candidate_idx, axis=0)
+            polygon = points.reshape(-1, 1, 2)
+        else:
+            # No more artifacts to remove
+            break
+
+    return polygon
+
+
 def main():
     if not os.path.exists(INPUT_FILE):
         print(f"Error: Could not find {INPUT_FILE}")
@@ -309,6 +386,9 @@ def main():
     main_contour = max(contours, key=cv2.contourArea)
     epsilon = 0.015 * cv2.arcLength(main_contour, True)
     approx_polygon = cv2.approxPolyDP(main_contour, epsilon, True)
+
+    # Filter out small, sharp concave angles that are not typical of room geometry
+    approx_polygon = filter_sharp_angles(approx_polygon, epsilon)
 
     vertices = []
     triangles = []
