@@ -572,6 +572,10 @@ def main():
     # 2. Export 2D Floor Plan as DXF with Wall Colors
     doc = ezdxf.new('R2010')
     msp = doc.modelspace()
+
+    # Define an offset for the dimension lines to avoid overlapping the walls
+    DIM_OFFSET = 0.2  # 20cm offset from the wall
+
     for i in range(num_pts):
         p1 = poly_pts_meters[i]
         p2 = poly_pts_meters[(i + 1) % num_pts]
@@ -581,6 +585,10 @@ def main():
         # Add line to DXF and set its color
         line = msp.add_line((p1[0], p1[1]), (p2[0], p2[1]))
         line.dxf.true_color = ezdxf.rgb2int((r, g, b))
+
+        # Add aligned dimension for each wall segment
+        # This places a measurement label parallel to the wall
+        msp.add_aligned_dim(p1, p2, distance=DIM_OFFSET).render()
 
     dxf_filename = "floor_plan.dxf"
     doc.saveas(dxf_filename)
