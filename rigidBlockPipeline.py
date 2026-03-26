@@ -11,12 +11,10 @@ from mcap_ros2.decoder import DecoderFactory
 from mcap_zstd_helper import iter_decoded_messages_with_zstd
 import json
 import ezdxf
+import argparse
+from pathlib import Path
 
 # --- CONFIGURATION ---
-INPUT_FILE = "raw_scan_0.mcap"
-OUTPUT_OBJ = "newest_scan.obj"
-TEXTURE_FILE = "newest_scan.png"
-
 # 1. GHOST REMOVAL
 MIN_LIDAR_DIST = 1.0
 
@@ -292,12 +290,23 @@ def filter_sharp_angles(polygon, length_scale_for_filter):
 
 
 def main():
-    if not os.path.exists(INPUT_FILE):
-        print(f"Error: Could not find {INPUT_FILE}")
+    parser = argparse.ArgumentParser(description="Process a .mcap file to generate a 3D model and floor plan.")
+    parser.add_argument("input_file", help="Path to the input .mcap file.")
+    args = parser.parse_args()
+
+    input_path = Path(args.input_file)
+    output_stem = input_path.stem
+    output_obj = input_path.with_name(f"{output_stem}.obj")
+    texture_file = input_path.with_name(f"{output_stem}.png")
+    dxf_filename = input_path.with_name(f"{output_stem}.dxf")
+    json_filename = input_path.with_name(f"{output_stem}_wall_materials.json")
+
+    if not os.path.exists(args.input_file):
+        print(f"Error: Could not find {args.input_file}")
         return
 
     print("Step 1: Reading Data...")
-    reader = make_reader(open(INPUT_FILE, "rb"), decoder_factories=[DecoderFactory()])
+    reader = make_reader(open(args.input_file, "rb"), decoder_factories=[DecoderFactory()])
     imu_data = []
     lidar_msgs = []
     images = []  # Restored!
@@ -518,12 +527,12 @@ def main():
     final_rigid_mesh.textures = [texture]
     final_rigid_mesh.triangle_material_ids = o3d.utility.IntVector(np.zeros(len(triangles), dtype=np.int32))
 
-    cv2.imwrite(TEXTURE_FILE, atlas_img)
-    print(f"   Saved baked atlas image to {TEXTURE_FILE}")
+    cv2.imwrite(str(texture_file), atlas_img)
+    print(f"   Saved baked atlas image to {texture_file}")
 
     # --- STEP 6: SAVE ---
-    print(f"Saving to {OUTPUT_OBJ}...")
-    o3d.io.write_triangle_mesh(OUTPUT_OBJ, final_rigid_mesh)
+    print(f"Saving to {output_obj}...")
+    o3d.io.write_triangle_mesh(str(output_obj), final_rigid_mesh)
 
     # ==========================================
     # --- STEP 7: CAD EXPORT & ML MATERIAL DATA ---
@@ -590,12 +599,10 @@ def main():
         # This places a measurement label parallel to the wall
         msp.add_aligned_dim(p1, p2, distance=DIM_OFFSET).render()
 
-    dxf_filename = "floor_plan.dxf"
     doc.saveas(dxf_filename)
     print(f"   Saved CAD floor plan to {dxf_filename}")
 
     # 3. Save material data to a JSON file
-    json_filename = "wall_materials.json"
     with open(json_filename, "w") as f:
         json.dump(wall_materials, f, indent=4)
     print(f"   Saved material data to {json_filename}")
