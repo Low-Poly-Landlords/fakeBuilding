@@ -20,7 +20,7 @@ MIN_LIDAR_DIST = 1.0
 
 # 2. LIDAR CALIBRATION
 LIDAR_ROLL_OFFSET = 0.0
-LIDAR_PITCH_OFFSET = -20.0
+LIDAR_PITCH_OFFSET = -30.0
 LIDAR_YAW_OFFSET = 0.0
 
 # 3. CAMERA CALIBRATION (Restored)
@@ -213,11 +213,6 @@ def bake_walls_to_atlas(images, imu_data, poly_pts_meters, segment_lengths, tota
 
 
 def filter_sharp_angles(polygon, length_scale_for_filter):
-    """
-    Filters a polygon to remove sharp concave "juts" AND sharp convex "spikes"
-    that are unlikely in a building plan.
-    It iteratively removes the worst offending point until no more points meet the criteria.
-    """
     pixel_threshold = length_scale_for_filter * 4.0
     MIN_CONVEX_ANGLE = 75  # Minimum angle for a "real" corner.
 
@@ -257,17 +252,12 @@ def filter_sharp_angles(polygon, length_scale_for_filter):
             angle_at_vertex = np.degrees(np.arccos(np.clip(np.dot(v_prev, v_next) / (len_prev * len_next), -1, 1)))
 
             should_score = False
-            # Condition for removing a concave "dent"
             if is_concave and len_prev < pixel_threshold and len_next < pixel_threshold:
                 should_score = True
-
-            # Condition for removing a convex "spike"
             if is_convex and angle_at_vertex < MIN_CONVEX_ANGLE and len_prev < pixel_threshold and len_next < pixel_threshold:
                 should_score = True
 
             if should_score:
-                # The score is the distance of the point from the line connecting its neighbors.
-                # This works for both concave and convex artifacts.
                 line_vec = p_next - p_prev
                 if np.linalg.norm(line_vec) == 0: continue
 
@@ -279,37 +269,29 @@ def filter_sharp_angles(polygon, length_scale_for_filter):
                     worst_candidate_idx = i
 
         if worst_candidate_idx != -1:
-            # Remove the point that creates the worst artifact and restart the process
             points = np.delete(points, worst_candidate_idx, axis=0)
             polygon = points.reshape(-1, 1, 2)
         else:
-            # No more artifacts to remove
             break
 
     return polygon
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Process a .mcap file to generate a 3D model and floor plan.")
-    parser.add_argument("input_file", help="Path to the input .mcap file.")
-    args = parser.parse_args()
-
-    input_path = Path(args.input_file)
+def process_mcap(input_path, show_viewer=True):
+    """Core function to process a single .mcap file."""
+    print(f"\n{'='*50}\nProcessing: {input_path.name}\n{'='*50}")
+    
     output_stem = input_path.stem
     output_obj = input_path.with_name(f"{output_stem}.obj")
     texture_file = input_path.with_name(f"{output_stem}.png")
     dxf_filename = input_path.with_name(f"{output_stem}.dxf")
     json_filename = input_path.with_name(f"{output_stem}_wall_materials.json")
 
-    if not os.path.exists(args.input_file):
-        print(f"Error: Could not find {args.input_file}")
-        return
-
     print("Step 1: Reading Data...")
-    reader = make_reader(open(args.input_file, "rb"), decoder_factories=[DecoderFactory()])
+    reader = make_reader(open(input_path, "rb"), decoder_factories=[DecoderFactory()])
     imu_data = []
     lidar_msgs = []
-    images = []  # Restored!
+    images = []
 
     for schema, channel, message, ros_msg in iter_decoded_messages_with_zstd(reader):
         if channel.topic == "/imu/data":
@@ -317,7 +299,7 @@ def main():
             imu_data.append((message.log_time, q))
         elif channel.topic == "/scan":
             lidar_msgs.append((message.log_time, ros_msg))
-        elif channel.topic == "/camera/image_raw": # Restored!
+        elif channel.topic == "/camera/image_raw": 
             try:
                 width = getattr(ros_msg, "width", 640)
                 height = getattr(ros_msg, "height", 480)
@@ -352,6 +334,10 @@ def main():
         pts = pts @ rot_matrix.T
 
         global_points.append(pts)
+
+    if not global_points:
+        print(f"Error: No lidar points processed for {input_path.name}. Skipping...")
+        return
 
     all_pts = np.vstack(global_points)
 
@@ -389,14 +375,13 @@ def main():
 
     contours, _ = cv2.findContours(closed_plan, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     if not contours:
-        print("Error: Could not find walls in the 2D slice.")
+        print(f"Error: Could not find walls in the 2D slice for {input_path.name}. Skipping...")
         return
 
     main_contour = max(contours, key=cv2.contourArea)
     epsilon = 0.015 * cv2.arcLength(main_contour, True)
     approx_polygon = cv2.approxPolyDP(main_contour, epsilon, True)
 
-    # Filter out small, sharp concave angles that are not typical of room geometry
     approx_polygon = filter_sharp_angles(approx_polygon, epsilon)
 
     vertices = []
@@ -497,7 +482,6 @@ def main():
             uvs.append([u, v])
 
     # --- STEP 5: ASSEMBLE MESH AND BAKE TEXTURE ---
-    # FIXED: This section is now properly un-indented out of the ceiling loop!
     print("Step 5: Applying Texture Atlas...")
     final_rigid_mesh = o3d.geometry.TriangleMesh()
     final_rigid_mesh.vertices = o3d.utility.Vector3dVector(vertices)
@@ -548,20 +532,14 @@ def main():
         p1 = poly_pts_meters[i]
         p2 = poly_pts_meters[(i + 1) % num_pts]
 
-        # Find where this wall lives on the U-axis of the atlas
         u_start = cumulative_dist / total_perimeter
         u_end = (cumulative_dist + segment_lengths[i]) / total_perimeter
         u_mid = (u_start + u_end) / 2.0
         px_x = int(u_mid * atlas_w)
 
-        # Extract the vertical column of pixels at the wall's midpoint
-        # Walls are in the top half of the atlas (V from 0.0 to 0.5)
         color_column_bgr = atlas_img[0:int(atlas_h * 0.5), px_x]
-
-        # Find the most frequent color in the column
         colors, counts = np.unique(color_column_bgr.reshape(-1, 3), axis=0, return_counts=True)
         
-        # Handle case where column is empty or has no colors
         if len(colors) > 0:
             most_frequent_bgr = colors[counts.argmax()]
             b, g, r = most_frequent_bgr
@@ -581,9 +559,7 @@ def main():
     # 2. Export 2D Floor Plan as DXF with Wall Colors
     doc = ezdxf.new('R2010')
     msp = doc.modelspace()
-
-    # Define an offset for the dimension lines to avoid overlapping the walls
-    DIM_OFFSET = 0.2  # 20cm offset from the wall
+    DIM_OFFSET = 0.2  
 
     for i in range(num_pts):
         p1 = poly_pts_meters[i]
@@ -591,24 +567,63 @@ def main():
         material_info = wall_materials[i]
         r, g, b = material_info["sampled_midpoint_rgb"]
 
-        # Add line to DXF and set its color
         line = msp.add_line((p1[0], p1[1]), (p2[0], p2[1]))
         line.dxf.true_color = ezdxf.rgb2int((r, g, b))
-
-        # Add aligned dimension for each wall segment
-        # This places a measurement label parallel to the wall
         msp.add_aligned_dim(p1, p2, distance=DIM_OFFSET).render()
 
     doc.saveas(dxf_filename)
     print(f"   Saved CAD floor plan to {dxf_filename}")
 
-    # 3. Save material data to a JSON file
     with open(json_filename, "w") as f:
         json.dump(wall_materials, f, indent=4)
     print(f"   Saved material data to {json_filename}")
 
-    print("Opening Viewer...")
-    o3d.visualization.draw_geometries([final_rigid_mesh], window_name="UV Mapped Architecture")
+    if show_viewer:
+        print("Opening Viewer...")
+        o3d.visualization.draw_geometries([final_rigid_mesh], window_name=f"UV Mapped Architecture - {input_path.name}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Process .mcap file(s) or directorie(s) to generate 3D models and floor plans.")
+    # Changed to accept multiple inputs
+    parser.add_argument("input_paths", nargs="+", help="Path(s) to the input .mcap file(s) or directory(ies).")
+    # Added a flag to optionally disable the 3D viewer popups during batch processing
+    parser.add_argument("--hide-viewer", action="store_true", help="Disable the 3D viewer popup after processing each file.")
+    args = parser.parse_args()
+
+    mcap_files = []
+
+    # Parse arguments to collect all .mcap files
+    for path_str in args.input_paths:
+        p = Path(path_str)
+        if p.is_dir():
+            # Recursively find all .mcap files in the directory
+            found_files = list(p.rglob("*.mcap"))
+            if not found_files:
+                print(f"Warning: No .mcap files found in directory {p}")
+            mcap_files.extend(found_files)
+        elif p.is_file() and p.suffix.lower() == '.mcap':
+            mcap_files.append(p)
+        else:
+            print(f"Warning: {path_str} is not a valid directory or .mcap file.")
+
+    # Remove duplicates just in case the same file or directory was passed twice
+    mcap_files = list(dict.fromkeys(mcap_files))
+
+    if not mcap_files:
+        print("Error: No valid .mcap files found to process.")
+        sys.exit(1)
+
+    print(f"Found {len(mcap_files)} file(s) to process.")
+
+    # Process each file
+    for f in mcap_files:
+        try:
+            process_mcap(f, show_viewer=not args.hide_viewer)
+        except Exception as e:
+            print(f"An error occurred while processing {f.name}: {e}")
+
+    print("\nBatch processing complete!")
 
 
 if __name__ == "__main__":
