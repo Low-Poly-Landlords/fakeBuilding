@@ -277,10 +277,11 @@ def filter_sharp_angles(polygon, length_scale_for_filter):
     return polygon
 
 
-def process_mcap(input_path, show_viewer=True):
+# <-- Changed default behavior to False
+def process_mcap(input_path, show_viewer=False):
     """Core function to process a single .mcap file."""
-    print(f"\n{'='*50}\nProcessing: {input_path.name}\n{'='*50}")
-    
+    print(f"\n{'=' * 50}\nProcessing: {input_path.name}\n{'=' * 50}")
+
     output_stem = input_path.stem
     output_obj = input_path.with_name(f"{output_stem}.obj")
     texture_file = input_path.with_name(f"{output_stem}.png")
@@ -299,7 +300,7 @@ def process_mcap(input_path, show_viewer=True):
             imu_data.append((message.log_time, q))
         elif channel.topic == "/scan":
             lidar_msgs.append((message.log_time, ros_msg))
-        elif channel.topic == "/camera/image_raw": 
+        elif channel.topic == "/camera/image_raw":
             try:
                 width = getattr(ros_msg, "width", 640)
                 height = getattr(ros_msg, "height", 480)
@@ -539,12 +540,12 @@ def process_mcap(input_path, show_viewer=True):
 
         color_column_bgr = atlas_img[0:int(atlas_h * 0.5), px_x]
         colors, counts = np.unique(color_column_bgr.reshape(-1, 3), axis=0, return_counts=True)
-        
+
         if len(colors) > 0:
             most_frequent_bgr = colors[counts.argmax()]
             b, g, r = most_frequent_bgr
         else:
-            r, g, b = 0, 0, 0 # Default to black if no color found
+            r, g, b = 0, 0, 0  # Default to black if no color found
 
         wall_materials.append({
             "wall_id": i,
@@ -559,7 +560,7 @@ def process_mcap(input_path, show_viewer=True):
     # 2. Export 2D Floor Plan as DXF with Wall Colors
     doc = ezdxf.new('R2010')
     msp = doc.modelspace()
-    DIM_OFFSET = 0.2  
+    DIM_OFFSET = 0.2
 
     for i in range(num_pts):
         p1 = poly_pts_meters[i]
@@ -584,20 +585,21 @@ def process_mcap(input_path, show_viewer=True):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Process .mcap file(s) or directorie(s) to generate 3D models and floor plans.")
-    # Changed to accept multiple inputs
+    parser = argparse.ArgumentParser(
+        description="Process .mcap file(s) or directorie(s) to generate 3D models and floor plans.")
     parser.add_argument("input_paths", nargs="+", help="Path(s) to the input .mcap file(s) or directory(ies).")
-    # Added a flag to optionally disable the 3D viewer popups during batch processing
-    parser.add_argument("--hide-viewer", action="store_true", help="Disable the 3D viewer popup after processing each file.")
+
+    # <-- Replaced --hide-viewer with opt-in -s / --show-scan
+    parser.add_argument("-s", "--show-scan", action="store_true",
+                        help="Show the 3D viewer popup after processing each file.")
+
     args = parser.parse_args()
 
     mcap_files = []
 
-    # Parse arguments to collect all .mcap files
     for path_str in args.input_paths:
         p = Path(path_str)
         if p.is_dir():
-            # Recursively find all .mcap files in the directory
             found_files = list(p.rglob("*.mcap"))
             if not found_files:
                 print(f"Warning: No .mcap files found in directory {p}")
@@ -607,7 +609,6 @@ def main():
         else:
             print(f"Warning: {path_str} is not a valid directory or .mcap file.")
 
-    # Remove duplicates just in case the same file or directory was passed twice
     mcap_files = list(dict.fromkeys(mcap_files))
 
     if not mcap_files:
@@ -616,10 +617,10 @@ def main():
 
     print(f"Found {len(mcap_files)} file(s) to process.")
 
-    # Process each file
     for f in mcap_files:
         try:
-            process_mcap(f, show_viewer=not args.hide_viewer)
+            # <-- Pass the new flag variable here
+            process_mcap(f, show_viewer=args.show_scan)
         except Exception as e:
             print(f"An error occurred while processing {f.name}: {e}")
 

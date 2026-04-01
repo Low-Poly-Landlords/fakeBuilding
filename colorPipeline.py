@@ -7,11 +7,11 @@ import bisect
 from scipy.spatial.transform import Rotation as R
 from mcap.reader import make_reader
 from mcap_ros2.decoder import DecoderFactory
-import argparse  # Added for commandline args
-from pathlib import Path  # Added for path handling
+from mcap_zstd_helper import iter_decoded_messages_with_zstd
+import argparse
+from pathlib import Path
 
 # --- CONFIGURATION ---
-# Note: INPUT_FILE and OUTPUT_OBJ are removed, as they are now handled dynamically.
 
 # 1. GHOST REMOVAL
 MIN_LIDAR_DIST = 1.0
@@ -29,7 +29,7 @@ CAM_FOV_DEG = 70.0
 # If windows are on the floor, try Pitch = 90.0
 # If windows are on the left wall, try Yaw = 90.0
 CAM_ROLL = -17
-CAM_PITCH = -180.0  # <--- TRY THIS FIRST
+CAM_PITCH = -174.0  # <--- TRY THIS FIRST
 CAM_YAW = 0.0
 
 # 4. MESH SETTINGS
@@ -101,7 +101,7 @@ def project_points_with_normals(points, normals, image, intrinsic_matrix):
     return colors, final_mask
 
 
-def process_mcap(input_path, show_viewer=True):
+def process_mcap(input_path, show_viewer=False):
     """Core function to process a single .mcap file."""
     print(f"\n{'=' * 50}\nProcessing: {input_path.name}\n{'=' * 50}")
 
@@ -118,7 +118,7 @@ def process_mcap(input_path, show_viewer=True):
     lidar_msgs = []
     images = []
 
-    for schema, channel, message, ros_msg in reader.iter_decoded_messages():
+    for schema, channel, message, ros_msg in iter_decoded_messages_with_zstd(reader):
         if channel.topic == "/imu/data":
             q = [ros_msg.orientation.x, ros_msg.orientation.y, ros_msg.orientation.z, ros_msg.orientation.w]
             imu_data.append((message.log_time, q))
@@ -228,8 +228,11 @@ def process_mcap(input_path, show_viewer=True):
 def main():
     parser = argparse.ArgumentParser(description="Process .mcap file(s) or directorie(s) to generate 3D models.")
     parser.add_argument("input_paths", nargs="+", help="Path(s) to the input .mcap file(s) or directory(ies).")
-    parser.add_argument("--hide-viewer", action="store_true",
-                        help="Disable the 3D viewer popup after processing each file.")
+
+    # <-- Changed this flag to be opt-in rather than opt-out
+    parser.add_argument("-s", "--show-scan", action="store_true",
+                        help="Show the 3D viewer popup after processing each file.")
+
     args = parser.parse_args()
 
     mcap_files = []
@@ -260,7 +263,8 @@ def main():
     # Process each file
     for f in mcap_files:
         try:
-            process_mcap(f, show_viewer=not args.hide_viewer)
+            # <-- Updated this variable call
+            process_mcap(f, show_viewer=args.show_scan)
         except Exception as e:
             print(f"An error occurred while processing {f.name}: {e}")
 

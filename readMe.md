@@ -31,30 +31,48 @@ The files in this project serve 2 purposes:
         - Filename are input from the commandline
 
 ## How to run rigidBlockPipeline ##
-rigidBlockPipeline must be ran from the command line interface. It should be ran with the following structure
+rigidBlockPipeline must be ran from the command line interface. It should be ran with the following structure.
+
 ```
 python rigidBlockPipeline.py [relative path to .mcap file]
 ```
+
 For example:
 ```
 python rigidBlockPipeline.py hallway.mcap
 ```
+
 rigidBlockPipeline can also process multiple files at once. It can proccess and unlimited number of files at a time.
+
 ```
 python rigidBlockPipeline.py [first file path] [second file path]
 ```
+
 For example:
 ```
 python rigidBlockPipeline.py hallway.mcap room1.mcap room2.mcap
 ```
+
 rigidBlockPipeline can also recursively process all files within a directory
 ```
-python rigidBlockPipeline.py [relativa path to directory]
+python rigidBlockPipeline.py [relative path to directory]
 ```
 For example:
 ```
 python rigidBlockPipeline.py scan_folder
 ```
+By default, rigidBlockPipeline will NOT show the produced obj files. In order to show them, include the "-s" flag or the "--show-scan" flag to see it.
+```
+python rigidBlockPipeline -s [file/directory path]
+python rigidBlockPipeline --show-scan [file/directory path]
+```
+For example:
+```
+python rigidBlockPipeline -s hallway.mcap
+python rigidBlockPipeline --show-scan hallway.mcap
+```
+This applies to all files/diretories included in the command.
+
 Note, these examples are all assuming that the .mcap files and scan directory are in the same directory. It will work if they're not, you just need to make sure the relative path is correct.
 
 Other note, all the .dxf and .obj files produced have the exact same names as the .mcap files used to create them.
