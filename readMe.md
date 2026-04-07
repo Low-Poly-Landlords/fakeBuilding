@@ -24,14 +24,67 @@ The files in this project serve 2 purposes:
     - rigidBlockPipeline
         - This generates a "snapped to a grid" version of the room with the most clear images projected onto the wall. (how the images are projected will be changed in the future)
         - This also generates a .dxf file containing a 2d floor plan, with material properties in the walls that can later be used to simulate attenuation
-        - Filenames must be changed within the code, at the top
+        - Filenames are input from the commandline
     - colorPipeline
         - This generates a voxelized version of the room, where the voxels are painted the color of the "most commmon" color that appears in that spot in the camera data.
         - This DOES NOT generate a 2d floor plan as of right now
-        - Filename must be changed in the code itself, at the top of the file
+        - Filename are input from the commandline
+
+## How to run rigidBlockPipeline ##
+rigidBlockPipeline must be ran from the command line interface. It should be ran with the following structure.
+
+```
+python rigidBlockPipeline.py [relative path to .mcap file]
+```
+
+For example:
+```
+python rigidBlockPipeline.py hallway.mcap
+```
+
+rigidBlockPipeline can also process multiple files at once. It can proccess and unlimited number of files at a time.
+
+```
+python rigidBlockPipeline.py [first file path] [second file path]
+```
+
+For example:
+```
+python rigidBlockPipeline.py hallway.mcap room1.mcap room2.mcap
+```
+
+rigidBlockPipeline can also recursively process all files within a directory
+```
+python rigidBlockPipeline.py [relative path to directory]
+```
+For example:
+```
+python rigidBlockPipeline.py scan_folder
+```
+By default, rigidBlockPipeline will NOT show the produced obj files. In order to show them, include the "-s" flag or the "--show-scan" flag to see it.
+```
+python rigidBlockPipeline -s [file/directory path]
+python rigidBlockPipeline --show-scan [file/directory path]
+```
+For example:
+```
+python rigidBlockPipeline -s hallway.mcap
+python rigidBlockPipeline --show-scan hallway.mcap
+```
+This applies to all files/diretories included in the command.
+
+Note, these examples are all assuming that the .mcap files and scan directory are in the same directory. It will work if they're not, you just need to make sure the relative path is correct.
+
+Other note, all the .dxf and .obj files produced have the exact same names as the .mcap files used to create them.
+
+
+## How to run colorPipeline.py ##
+This runs the exact same as rigidBlockPipeline.py, refer to the instructions for rigidBlockPipeline, but replace rigidBlockPipeline.py with colorPipeline.py
 
 ## Other programs: ##
 - dxf_viewer.py
     - This program can open and view .dxf files, it's mostly to make sure that everything is working fine
 - mcap_zstd_helper.py
     - This program is called in order to unzip the .mcap files, DO NOT DELETE THIS
+- calibrate_pitch.py
+    - This program is used to help calibrate the pitch value of the lidar. This can be used to update the internals of colorPipeline and rigidBlockPipeline if the scans don't look correct

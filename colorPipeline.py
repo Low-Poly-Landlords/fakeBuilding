@@ -7,10 +7,11 @@ import bisect
 from scipy.spatial.transform import Rotation as R
 from mcap.reader import make_reader
 from mcap_ros2.decoder import DecoderFactory
+from mcap_zstd_helper import iter_decoded_messages_with_zstd
+import argparse
+from pathlib import Path
 
 # --- CONFIGURATION ---
-INPUT_FILE = "enlabopenroom-001.mcap"
-OUTPUT_OBJ = "enlabopenroom.obj"
 
 # 1. GHOST REMOVAL
 MIN_LIDAR_DIST = 1.0
@@ -28,7 +29,7 @@ CAM_FOV_DEG = 70.0
 # If windows are on the floor, try Pitch = 90.0
 # If windows are on the left wall, try Yaw = 90.0
 CAM_ROLL = -17
-CAM_PITCH = -180.0  # <--- TRY THIS FIRST
+CAM_PITCH = -174.0  # <--- TRY THIS FIRST
 CAM_YAW = 0.0
 
 # 4. MESH SETTINGS
@@ -100,18 +101,24 @@ def project_points_with_normals(points, normals, image, intrinsic_matrix):
     return colors, final_mask
 
 
-def main():
-    if not os.path.exists(INPUT_FILE):
-        print(f"Error: Could not find {INPUT_FILE}")
+def process_mcap(input_path, show_viewer=False):
+    """Core function to process a single .mcap file."""
+    print(f"\n{'=' * 50}\nProcessing: {input_path.name}\n{'=' * 50}")
+
+    input_file_str = str(input_path)
+    output_obj = input_path.with_name(f"{input_path.stem}.obj")
+
+    if not os.path.exists(input_file_str):
+        print(f"Error: Could not find {input_file_str}")
         return
 
     print("Step 1: Reading Data...")
-    reader = make_reader(open(INPUT_FILE, "rb"), decoder_factories=[DecoderFactory()])
+    reader = make_reader(open(input_file_str, "rb"), decoder_factories=[DecoderFactory()])
     imu_data = []
     lidar_msgs = []
     images = []
 
-    for schema, channel, message, ros_msg in reader.iter_decoded_messages():
+    for schema, channel, message, ros_msg in iter_decoded_messages_with_zstd(reader):
         if channel.topic == "/imu/data":
             q = [ros_msg.orientation.x, ros_msg.orientation.y, ros_msg.orientation.z, ros_msg.orientation.w]
             imu_data.append((message.log_time, q))
@@ -211,9 +218,57 @@ def main():
     vertices_to_remove = densities < density_threshold
     mesh.remove_vertices_by_mask(vertices_to_remove)
 
-    print(f"Saving to {OUTPUT_OBJ}...")
-    o3d.io.write_triangle_mesh(OUTPUT_OBJ, mesh)
-    o3d.visualization.draw_geometries([mesh], window_name="Final Corrected Scan")
+    print(f"Saving to {output_obj}...")
+    o3d.io.write_triangle_mesh(str(output_obj), mesh)
+
+    if show_viewer:
+        o3d.visualization.draw_geometries([mesh], window_name=f"Final Corrected Scan - {input_path.name}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Process .mcap file(s) or directorie(s) to generate 3D models.")
+    parser.add_argument("input_paths", nargs="+", help="Path(s) to the input .mcap file(s) or directory(ies).")
+
+    # <-- Changed this flag to be opt-in rather than opt-out
+    parser.add_argument("-s", "--show-scan", action="store_true",
+                        help="Show the 3D viewer popup after processing each file.")
+
+    args = parser.parse_args()
+
+    mcap_files = []
+
+    # Parse arguments to collect all .mcap files
+    for path_str in args.input_paths:
+        p = Path(path_str)
+        if p.is_dir():
+            # Recursively find all .mcap files in the directory
+            found_files = list(p.rglob("*.mcap"))
+            if not found_files:
+                print(f"Warning: No .mcap files found in directory {p}")
+            mcap_files.extend(found_files)
+        elif p.is_file() and p.suffix.lower() == '.mcap':
+            mcap_files.append(p)
+        else:
+            print(f"Warning: {path_str} is not a valid directory or .mcap file.")
+
+    # Remove duplicates just in case the same file or directory was passed twice
+    mcap_files = list(dict.fromkeys(mcap_files))
+
+    if not mcap_files:
+        print("Error: No valid .mcap files found to process.")
+        sys.exit(1)
+
+    print(f"Found {len(mcap_files)} file(s) to process.")
+
+    # Process each file
+    for f in mcap_files:
+        try:
+            # <-- Updated this variable call
+            process_mcap(f, show_viewer=args.show_scan)
+        except Exception as e:
+            print(f"An error occurred while processing {f.name}: {e}")
+
+    print("\nBatch processing complete!")
 
 
 if __name__ == "__main__":
