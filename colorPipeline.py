@@ -7,7 +7,7 @@ import bisect
 from scipy.spatial.transform import Rotation as R
 from mcap.reader import make_reader
 from mcap_ros2.decoder import DecoderFactory
-from mcap_zstd_helper import iter_decoded_messages_with_zstd
+from mcap_zstd_helper import iter_decoded_messages_with_zstd  # <-- RESTORED
 import argparse
 from pathlib import Path
 
@@ -18,7 +18,7 @@ MIN_LIDAR_DIST = 1.0
 
 # 2. LIDAR CALIBRATION (Your Tuned Values)
 LIDAR_ROLL_OFFSET = 0.0
-LIDAR_PITCH_OFFSET = -30.0
+LIDAR_PITCH_OFFSET = 0.0
 LIDAR_YAW_OFFSET = 0.0
 
 # 3. CAMERA CALIBRATION (THE FIX)
@@ -118,6 +118,7 @@ def process_mcap(input_path, show_viewer=False):
     lidar_msgs = []
     images = []
 
+    # <-- RESTORED: Using the ZSTD helper loop
     for schema, channel, message, ros_msg in iter_decoded_messages_with_zstd(reader):
         if channel.topic == "/imu/data":
             q = [ros_msg.orientation.x, ros_msg.orientation.y, ros_msg.orientation.z, ros_msg.orientation.w]
@@ -129,9 +130,18 @@ def process_mcap(input_path, show_viewer=False):
                 width = getattr(ros_msg, "width", 640)
                 height = getattr(ros_msg, "height", 480)
                 np_arr = np.frombuffer(ros_msg.data, dtype=np.uint8)
-                img = np_arr.reshape((height, width, 3))
+
+                # Dynamically handle 4-byte (XRGB8888) and 3-byte formats
+                if len(np_arr) == height * width * 4:
+                    img_4ch = np_arr.reshape((height, width, 4))
+                    img = img_4ch[:, :, :3]
+                elif len(np_arr) == height * width * 3:
+                    img = np_arr.reshape((height, width, 3))
+                else:
+                    continue
+
                 images.append((message.log_time, img))
-            except:
+            except Exception as e:
                 pass
 
     print(f"   Loaded: {len(lidar_msgs)} Scans, {len(images)} Images.")

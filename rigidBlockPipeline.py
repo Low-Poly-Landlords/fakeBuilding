@@ -20,7 +20,7 @@ MIN_LIDAR_DIST = 1.0
 
 # 2. LIDAR CALIBRATION
 LIDAR_ROLL_OFFSET = 0.0
-LIDAR_PITCH_OFFSET = -30.0
+LIDAR_PITCH_OFFSET = 0.0
 LIDAR_YAW_OFFSET = 0.0
 
 # 3. CAMERA CALIBRATION (Restored)
@@ -279,8 +279,8 @@ def filter_sharp_angles(polygon, length_scale_for_filter):
 
 def process_mcap(input_path, show_viewer=True):
     """Core function to process a single .mcap file."""
-    print(f"\n{'='*50}\nProcessing: {input_path.name}\n{'='*50}")
-    
+    print(f"\n{'=' * 50}\nProcessing: {input_path.name}\n{'=' * 50}")
+
     output_stem = input_path.stem
     output_obj = input_path.with_name(f"{output_stem}.obj")
     texture_file = input_path.with_name(f"{output_stem}.png")
@@ -299,14 +299,23 @@ def process_mcap(input_path, show_viewer=True):
             imu_data.append((message.log_time, q))
         elif channel.topic == "/scan":
             lidar_msgs.append((message.log_time, ros_msg))
-        elif channel.topic == "/camera/image_raw": 
+        elif channel.topic == "/camera/image_raw":
             try:
                 width = getattr(ros_msg, "width", 640)
                 height = getattr(ros_msg, "height", 480)
                 np_arr = np.frombuffer(ros_msg.data, dtype=np.uint8)
-                img = np_arr.reshape((height, width, 3))
+
+                # Dynamically handle 4-byte (XRGB8888) and 3-byte formats
+                if len(np_arr) == height * width * 4:
+                    img_4ch = np_arr.reshape((height, width, 4))
+                    img = img_4ch[:, :, :3]
+                elif len(np_arr) == height * width * 3:
+                    img = np_arr.reshape((height, width, 3))
+                else:
+                    continue
+
                 images.append((message.log_time, img))
-            except:
+            except Exception as e:
                 pass
 
     print(f"   Loaded: {len(lidar_msgs)} Scans, {len(images)} Images.")
@@ -539,12 +548,12 @@ def process_mcap(input_path, show_viewer=True):
 
         color_column_bgr = atlas_img[0:int(atlas_h * 0.5), px_x]
         colors, counts = np.unique(color_column_bgr.reshape(-1, 3), axis=0, return_counts=True)
-        
+
         if len(colors) > 0:
             most_frequent_bgr = colors[counts.argmax()]
             b, g, r = most_frequent_bgr
         else:
-            r, g, b = 0, 0, 0 # Default to black if no color found
+            r, g, b = 0, 0, 0  # Default to black if no color found
 
         wall_materials.append({
             "wall_id": i,
@@ -559,7 +568,7 @@ def process_mcap(input_path, show_viewer=True):
     # 2. Export 2D Floor Plan as DXF with Wall Colors
     doc = ezdxf.new('R2010')
     msp = doc.modelspace()
-    DIM_OFFSET = 0.2  
+    DIM_OFFSET = 0.2
 
     for i in range(num_pts):
         p1 = poly_pts_meters[i]
@@ -584,11 +593,13 @@ def process_mcap(input_path, show_viewer=True):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Process .mcap file(s) or directorie(s) to generate 3D models and floor plans.")
-    # Changed to accept multiple inputs
+    parser = argparse.ArgumentParser(
+        description="Process .mcap file(s) or directorie(s) to generate 3D models and floor plans.")
     parser.add_argument("input_paths", nargs="+", help="Path(s) to the input .mcap file(s) or directory(ies).")
-    # Added a flag to optionally disable the 3D viewer popups during batch processing
-    parser.add_argument("--hide-viewer", action="store_true", help="Disable the 3D viewer popup after processing each file.")
+
+    # <-- Changed flag to make viewer opt-in
+    parser.add_argument("-s", "--show-scan", action="store_true",
+                        help="Show the 3D viewer popup after processing each file.")
     args = parser.parse_args()
 
     mcap_files = []
@@ -619,7 +630,8 @@ def main():
     # Process each file
     for f in mcap_files:
         try:
-            process_mcap(f, show_viewer=not args.hide_viewer)
+            # <-- Updated invocation
+            process_mcap(f, show_viewer=args.show_scan)
         except Exception as e:
             print(f"An error occurred while processing {f.name}: {e}")
 
