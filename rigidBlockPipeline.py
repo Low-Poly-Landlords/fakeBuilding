@@ -280,7 +280,7 @@ def filter_sharp_angles(polygon, length_scale_for_filter):
 def process_mcap(input_path, show_viewer=True):
     """Core function to process a single .mcap file."""
     print(f"\n{'='*50}\nProcessing: {input_path.name}\n{'='*50}")
-    
+
     output_stem = input_path.stem
     output_obj = input_path.with_name(f"{output_stem}.obj")
     texture_file = input_path.with_name(f"{output_stem}.png")
@@ -299,14 +299,34 @@ def process_mcap(input_path, show_viewer=True):
             imu_data.append((message.log_time, q))
         elif channel.topic == "/scan":
             lidar_msgs.append((message.log_time, ros_msg))
-        elif channel.topic == "/camera/image_raw": 
+        elif channel.topic == "/camera/image_raw":
             try:
                 width = getattr(ros_msg, "width", 640)
                 height = getattr(ros_msg, "height", 480)
                 np_arr = np.frombuffer(ros_msg.data, dtype=np.uint8)
-                img = np_arr.reshape((height, width, 3))
+
+                # Dynamically handle 4-byte (XRGB8888) and 3-byte formats
+                if len(np_arr) == height * width * 4:
+                    img_4ch = np_arr.reshape((height, width, 4))
+
+                    # On Raspberry Pi (little-endian), XRGB8888 is usually packed as [B, G, R, X].
+                    # OpenCV expects BGR, so we simply slice off the 4th padding channel.
+                    img = img_4ch[:, :, :3]
+
+                    # NOTE: If your output colors look strange (e.g., red and blue are swapped),
+                    # comment out the line above and uncomment the line below:
+                    # img = cv2.cvtColor(img_4ch, cv2.COLOR_RGBA2BGR)
+
+                elif len(np_arr) == height * width * 3:
+                    # Fallback for your old 3-byte format
+                    img = np_arr.reshape((height, width, 3))
+                else:
+                    # Unrecognized byte count, skip to avoid crashes
+                    continue
+
                 images.append((message.log_time, img))
-            except:
+            except Exception as e:
+                # Optional: print(f"Image decode error: {e}") to help debug future issues
                 pass
 
     print(f"   Loaded: {len(lidar_msgs)} Scans, {len(images)} Images.")
@@ -539,7 +559,7 @@ def process_mcap(input_path, show_viewer=True):
 
         color_column_bgr = atlas_img[0:int(atlas_h * 0.5), px_x]
         colors, counts = np.unique(color_column_bgr.reshape(-1, 3), axis=0, return_counts=True)
-        
+
         if len(colors) > 0:
             most_frequent_bgr = colors[counts.argmax()]
             b, g, r = most_frequent_bgr
@@ -559,7 +579,7 @@ def process_mcap(input_path, show_viewer=True):
     # 2. Export 2D Floor Plan as DXF with Wall Colors
     doc = ezdxf.new('R2010')
     msp = doc.modelspace()
-    DIM_OFFSET = 0.2  
+    DIM_OFFSET = 0.2
 
     for i in range(num_pts):
         p1 = poly_pts_meters[i]
