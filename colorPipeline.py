@@ -7,29 +7,26 @@ import bisect
 from scipy.spatial.transform import Rotation as R
 from mcap.reader import make_reader
 from mcap_ros2.decoder import DecoderFactory
-from mcap_zstd_helper import iter_decoded_messages_with_zstd  # <-- RESTORED
+from mcap_zstd_helper import iter_decoded_messages_with_zstd
 import argparse
 from pathlib import Path
+import plotly.graph_objects as go  # <-- NEW: For browser-based visualization
 
 # --- CONFIGURATION ---
 
 # 1. GHOST REMOVAL
 MIN_LIDAR_DIST = 1.0
 
-# 2. LIDAR CALIBRATION (Your Tuned Values)
+# 2. LIDAR CALIBRATION
 LIDAR_ROLL_OFFSET = 0.0
 LIDAR_PITCH_OFFSET = 0.0
 LIDAR_YAW_OFFSET = 0.0
 
-# 3. CAMERA CALIBRATION (THE FIX)
+# 3. CAMERA CALIBRATION
 CAM_OFFSET = [0.0, 0.0, 0.05]
 CAM_FOV_DEG = 70.0
-
-# If windows are on the ceiling, try Pitch = -90.0
-# If windows are on the floor, try Pitch = 90.0
-# If windows are on the left wall, try Yaw = 90.0
 CAM_ROLL = -17
-CAM_PITCH = -174.0  # <--- TRY THIS FIRST
+CAM_PITCH = 0
 CAM_YAW = 0.0
 
 # 4. MESH SETTINGS
@@ -46,17 +43,13 @@ LIDAR_FIX = R.from_euler('xyz', [
 
 IMU_FIX = R.from_euler('x', 90, degrees=True)
 
-# We construct the camera rotation matrix dynamically now
-# Base: Robot Frame -> Camera Optical Frame (Standard Swap)
 BASE_ROBOT_TO_CAM = np.array([
     [0, -1, 0],
     [0, 0, -1],
     [1, 0, 0]
 ])
 
-# User Correction: Applied on top of the base
 USER_CAM_FIX = R.from_euler('xyz', [CAM_ROLL, CAM_PITCH, CAM_YAW], degrees=True).as_matrix()
-# Combined Transform
 FINAL_ROBOT_TO_CAM = USER_CAM_FIX @ BASE_ROBOT_TO_CAM
 
 
@@ -85,8 +78,6 @@ def project_points_with_normals(points, normals, image, intrinsic_matrix):
 
     in_frame = (u >= 0) & (u < w) & (v >= 0) & (v < h)
 
-    # Normal Check (Backface Culling)
-    # Normals facing camera have Z < -0.2 in Optical Frame
     nz = normals[:, 2]
     facing_camera = nz < -0.2
 
@@ -101,12 +92,58 @@ def project_points_with_normals(points, normals, image, intrinsic_matrix):
     return colors, final_mask
 
 
-def process_mcap(input_path, show_viewer=False):
-    """Core function to process a single .mcap file."""
+def export_to_plotly(mesh, output_html_path):
+    """NEW: Exports the mesh to an interactive, client-side HTML file using Plotly."""
+    print("   Preparing Plotly visualization...")
+
+    # Decimate the mesh. Browsers struggle with millions of triangles.
+    # 100,000 triangles is a safe upper limit for smooth web performance.
+    target_triangles = 100000
+    if len(mesh.triangles) > target_triangles:
+        print("   Decimating mesh for web browser performance...")
+        mesh = mesh.simplify_quadric_decimation(target_triangles)
+
+    vertices = np.asarray(mesh.vertices)
+    triangles = np.asarray(mesh.triangles)
+
+    # Handle colors
+    if mesh.has_vertex_colors():
+        colors = np.asarray(mesh.vertex_colors)
+        # Plotly likes colors as 'rgb(R, G, B)' strings or normalized arrays
+        color_strings = [f'rgb({int(r * 255)}, {int(g * 255)}, {int(b * 255)})' for r, g, b in colors]
+    else:
+        color_strings = None
+
+    fig = go.Figure(data=[
+        go.Mesh3d(
+            x=vertices[:, 0],
+            y=vertices[:, 1],
+            z=vertices[:, 2],
+            i=triangles[:, 0],
+            j=triangles[:, 1],
+            k=triangles[:, 2],
+            vertexcolor=color_strings,
+            opacity=1.0,
+            name="LiDAR Mesh"
+        )
+    ])
+
+    # Keep the aspect ratio 1:1:1 so the room isn't squished
+    fig.update_layout(
+        scene=dict(aspectmode='data'),
+        title="Interactive 3D Scan"
+    )
+
+    fig.write_html(str(output_html_path))
+    print(f"   Saved interactive web viewer to: {output_html_path}")
+
+
+def process_mcap(input_path, show_viewer=False, make_html=False):
     print(f"\n{'=' * 50}\nProcessing: {input_path.name}\n{'=' * 50}")
 
     input_file_str = str(input_path)
     output_obj = input_path.with_name(f"{input_path.stem}.obj")
+    output_html = input_path.with_name(f"{input_path.stem}_viewer.html")
 
     if not os.path.exists(input_file_str):
         print(f"Error: Could not find {input_file_str}")
@@ -118,7 +155,6 @@ def process_mcap(input_path, show_viewer=False):
     lidar_msgs = []
     images = []
 
-    # <-- RESTORED: Using the ZSTD helper loop
     for schema, channel, message, ros_msg in iter_decoded_messages_with_zstd(reader):
         if channel.topic == "/imu/data":
             q = [ros_msg.orientation.x, ros_msg.orientation.y, ros_msg.orientation.z, ros_msg.orientation.w]
@@ -131,7 +167,6 @@ def process_mcap(input_path, show_viewer=False):
                 height = getattr(ros_msg, "height", 480)
                 np_arr = np.frombuffer(ros_msg.data, dtype=np.uint8)
 
-                # Dynamically handle 4-byte (XRGB8888) and 3-byte formats
                 if len(np_arr) == height * width * 4:
                     img_4ch = np_arr.reshape((height, width, 4))
                     img = img_4ch[:, :, :3]
@@ -149,6 +184,7 @@ def process_mcap(input_path, show_viewer=False):
     # --- BUILD GEOMETRY ---
     print("Step 2: Building Geometry...")
     global_points = []
+    global_colors = []  # <-- NEW: Storing dynamic base colors
 
     for i, (log_time, scan_msg) in enumerate(lidar_msgs):
         angles = np.arange(scan_msg.angle_min, scan_msg.angle_max, scan_msg.angle_increment)
@@ -170,11 +206,25 @@ def process_mcap(input_path, show_viewer=False):
 
         global_points.append(pts)
 
+        # <-- NEW: LD06 Luminance / Intensity processing
+        if hasattr(scan_msg, 'intensities') and len(scan_msg.intensities) >= count:
+            intensities = np.array(scan_msg.intensities[:count])[valid]
+            # Normalize LD06 luminance (typical max ~200-255 for standard objects)
+            # Clip between 0 and 1, add a small base value so black isn't completely invisible
+            norm_intensity = np.clip((intensities / 255.0) + 0.1, 0, 1)
+            pts_colors = np.column_stack((norm_intensity, norm_intensity, norm_intensity))
+        else:
+            # Fallback if the MCAP didn't record intensities
+            pts_colors = np.ones_like(pts) * 0.7
+
+        global_colors.append(pts_colors)
+
     all_points = np.vstack(global_points)
+    all_colors = np.vstack(global_colors)
+
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(all_points)
-    colors = np.ones_like(all_points) * 0.7
-    pcd.colors = o3d.utility.Vector3dVector(colors)
+    pcd.colors = o3d.utility.Vector3dVector(all_colors)
 
     print("   Estimating Normals...")
     pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
@@ -197,12 +247,10 @@ def process_mcap(input_path, show_viewer=False):
             raw_quat = get_interpolated_pose(t, imu_data)
             robot_rot = (R.from_quat(raw_quat) * IMU_FIX).as_matrix()
 
-            # Transform Points
             pts_robot = points_np @ robot_rot.T
             pts_robot = pts_robot - CAM_OFFSET
             pts_optical = pts_robot @ FINAL_ROBOT_TO_CAM.T
 
-            # Transform Normals
             norms_robot = normals_np @ robot_rot.T
             norms_optical = norms_robot @ FINAL_ROBOT_TO_CAM.T
 
@@ -231,27 +279,30 @@ def process_mcap(input_path, show_viewer=False):
     print(f"Saving to {output_obj}...")
     o3d.io.write_triangle_mesh(str(output_obj), mesh)
 
+    # <-- NEW: Optional Plotly Export
+    if make_html:
+        export_to_plotly(mesh, output_html)
+
     if show_viewer:
         o3d.visualization.draw_geometries([mesh], window_name=f"Final Corrected Scan - {input_path.name}")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Process .mcap file(s) or directorie(s) to generate 3D models.")
+    parser = argparse.ArgumentParser(description="Process .mcap file(s) to generate 3D models.")
     parser.add_argument("input_paths", nargs="+", help="Path(s) to the input .mcap file(s) or directory(ies).")
-
-    # <-- Changed this flag to be opt-in rather than opt-out
     parser.add_argument("-s", "--show-scan", action="store_true",
-                        help="Show the 3D viewer popup after processing each file.")
+                        help="Show the desktop 3D viewer popup after processing each file.")
+    # <-- NEW FLAG for web viewer
+    parser.add_argument("-w", "--web-viewer", action="store_true",
+                        help="Generate an interactive HTML Plotly file for web/remote viewing.")
 
     args = parser.parse_args()
 
     mcap_files = []
 
-    # Parse arguments to collect all .mcap files
     for path_str in args.input_paths:
         p = Path(path_str)
         if p.is_dir():
-            # Recursively find all .mcap files in the directory
             found_files = list(p.rglob("*.mcap"))
             if not found_files:
                 print(f"Warning: No .mcap files found in directory {p}")
@@ -261,7 +312,6 @@ def main():
         else:
             print(f"Warning: {path_str} is not a valid directory or .mcap file.")
 
-    # Remove duplicates just in case the same file or directory was passed twice
     mcap_files = list(dict.fromkeys(mcap_files))
 
     if not mcap_files:
@@ -270,11 +320,10 @@ def main():
 
     print(f"Found {len(mcap_files)} file(s) to process.")
 
-    # Process each file
     for f in mcap_files:
         try:
-            # <-- Updated this variable call
-            process_mcap(f, show_viewer=args.show_scan)
+            # <-- Updated function call
+            process_mcap(f, show_viewer=args.show_scan, make_html=args.web_viewer)
         except Exception as e:
             print(f"An error occurred while processing {f.name}: {e}")
 
